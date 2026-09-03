@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.raju.portfolio.entity.Profile;
+import com.raju.portfolio.dto.ProfileRequest;
+import com.raju.portfolio.dto.ProfileResponse;
 import com.raju.portfolio.service.ProfileService;
 
 @RestController
@@ -27,43 +28,50 @@ public class ProfileController {
     }
 
     @GetMapping
-    public List<Profile> getAllProfiles() {
-        return profileService.getAllProfiles();
+    public ResponseEntity<List<ProfileResponse>> getAllProfiles() {
+
+        List<ProfileResponse> profiles =
+                profileService.getAllProfiles();
+
+        return ResponseEntity.ok(profiles);
     }
 
     @GetMapping("/{id}")
-    public Profile getProfileById(@PathVariable Long id) {
-        return profileService.getProfileById(id);
+    public ResponseEntity<ProfileResponse> getProfileById(
+            @PathVariable Long id) {
+
+        ProfileResponse profile =
+                profileService.getProfileById(id);
+
+        return ResponseEntity.ok(profile);
     }
 
     @PostMapping
-    public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) {
+    public ResponseEntity<ProfileResponse> createProfile(
+            @RequestBody ProfileRequest request) {
 
-        Profile savedProfile = profileService.saveProfile(profile);
+        ProfileResponse savedProfile =
+                profileService.saveProfile(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(savedProfile);
     }
-    
+
     @PutMapping("/{id}")
-    public ResponseEntity<Profile> updateProfile(
+    public ResponseEntity<ProfileResponse> updateProfile(
             @PathVariable Long id,
-            @RequestBody Profile profile) {
+            @RequestBody ProfileRequest request) {
 
-        Profile existingProfile = profileService.getProfileById(id);
-
-        profile.setId(existingProfile.getId());
-
-        Profile updatedProfile = profileService.saveProfile(profile);
+        ProfileResponse updatedProfile =
+                profileService.updateProfile(id, request);
 
         return ResponseEntity.ok(updatedProfile);
     }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
 
-        profileService.getProfileById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProfile(
+            @PathVariable Long id) {
 
         profileService.deleteProfile(id);
 

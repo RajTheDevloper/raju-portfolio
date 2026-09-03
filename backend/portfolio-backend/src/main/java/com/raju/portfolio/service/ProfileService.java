@@ -4,33 +4,78 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.raju.portfolio.dto.ProfileRequest;
+import com.raju.portfolio.dto.ProfileResponse;
 import com.raju.portfolio.entity.Profile;
 import com.raju.portfolio.exception.ProfileNotFoundException;
+import com.raju.portfolio.mapper.ProfileMapper;
 import com.raju.portfolio.repository.ProfileRepository;
 
 @Service
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final ProfileMapper profileMapper;
 
-    public ProfileService(ProfileRepository profileRepository) {
+    public ProfileService(
+            ProfileRepository profileRepository,
+            ProfileMapper profileMapper) {
+
         this.profileRepository = profileRepository;
+        this.profileMapper = profileMapper;
     }
 
-    public List<Profile> getAllProfiles() {
-        return profileRepository.findAll();
+    public List<ProfileResponse> getAllProfiles() {
+
+        List<Profile> profiles = profileRepository.findAll();
+
+        return profiles.stream()
+                .map(profileMapper::toResponse)
+                .toList();
     }
 
-    public Profile getProfileById(Long id) {
-        return profileRepository.findById(id)
+    public ProfileResponse getProfileById(Long id) {
+
+        Profile profile = profileRepository.findById(id)
                 .orElseThrow(() -> new ProfileNotFoundException(id));
+
+        return profileMapper.toResponse(profile);
     }
 
-    public Profile saveProfile(Profile profile) {
-        return profileRepository.save(profile);
+    public ProfileResponse saveProfile(ProfileRequest request) {
+
+        Profile profile = profileMapper.toEntity(request);
+
+        Profile savedProfile = profileRepository.save(profile);
+
+        return profileMapper.toResponse(savedProfile);
+    }
+
+    public ProfileResponse updateProfile(
+            Long id,
+            ProfileRequest request) {
+
+        Profile existingProfile = profileRepository.findById(id)
+                .orElseThrow(() -> new ProfileNotFoundException(id));
+
+        existingProfile.setName(request.getName());
+        existingProfile.setTitle(request.getTitle());
+        existingProfile.setAbout(request.getAbout());
+        existingProfile.setEmail(request.getEmail());
+        existingProfile.setLocation(request.getLocation());
+        existingProfile.setGithubUrl(request.getGithubUrl());
+        existingProfile.setLinkedinUrl(request.getLinkedinUrl());
+
+        Profile updatedProfile = profileRepository.save(existingProfile);
+
+        return profileMapper.toResponse(updatedProfile);
     }
 
     public void deleteProfile(Long id) {
-        profileRepository.deleteById(id);
+
+        Profile existingProfile = profileRepository.findById(id)
+                .orElseThrow(() -> new ProfileNotFoundException(id));
+
+        profileRepository.delete(existingProfile);
     }
 }
