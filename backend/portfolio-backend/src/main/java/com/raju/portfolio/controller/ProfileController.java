@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import com.raju.portfolio.dto.ProfileRequest;
 import com.raju.portfolio.dto.ProfileResponse;
 import com.raju.portfolio.service.ProfileService;
@@ -48,7 +50,7 @@ public class ProfileController {
 
     @PostMapping
     public ResponseEntity<ProfileResponse> createProfile(
-            @RequestBody ProfileRequest request) {
+            @RequestBody @Valid ProfileRequest request) {
 
         ProfileResponse savedProfile =
                 profileService.saveProfile(request);
@@ -61,7 +63,7 @@ public class ProfileController {
     @PutMapping("/{id}")
     public ResponseEntity<ProfileResponse> updateProfile(
             @PathVariable Long id,
-            @RequestBody ProfileRequest request) {
+            @RequestBody @Valid ProfileRequest request) {
 
         ProfileResponse updatedProfile =
                 profileService.updateProfile(id, request);
