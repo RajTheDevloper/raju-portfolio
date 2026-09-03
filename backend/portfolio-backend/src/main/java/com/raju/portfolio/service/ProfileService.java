@@ -27,7 +27,8 @@ public class ProfileService {
 
     public List<ProfileResponse> getAllProfiles() {
 
-        List<Profile> profiles = profileRepository.findAll();
+        List<Profile> profiles =
+                profileRepository.findAll();
 
         return profiles.stream()
                 .map(profileMapper::toResponse)
@@ -44,9 +45,11 @@ public class ProfileService {
 
     public ProfileResponse saveProfile(ProfileRequest request) {
 
-        Profile profile = profileMapper.toEntity(request);
+        Profile profile =
+                profileMapper.toEntity(request);
 
-        Profile savedProfile = profileRepository.save(profile);
+        Profile savedProfile =
+                profileRepository.save(profile);
 
         return profileMapper.toResponse(savedProfile);
     }
@@ -55,26 +58,30 @@ public class ProfileService {
             Long id,
             ProfileRequest request) {
 
-        Profile existingProfile = profileRepository.findById(id)
-                .orElseThrow(() -> new ProfileNotFoundException(id));
+        Profile existingProfile =
+                profileRepository.findById(id)
+                        .orElseThrow(
+                                () -> new ProfileNotFoundException(id)
+                        );
 
-        existingProfile.setName(request.getName());
-        existingProfile.setTitle(request.getTitle());
-        existingProfile.setAbout(request.getAbout());
-        existingProfile.setEmail(request.getEmail());
-        existingProfile.setLocation(request.getLocation());
-        existingProfile.setGithubUrl(request.getGithubUrl());
-        existingProfile.setLinkedinUrl(request.getLinkedinUrl());
+        profileMapper.updateEntity(
+                existingProfile,
+                request
+        );
 
-        Profile updatedProfile = profileRepository.save(existingProfile);
+        Profile updatedProfile =
+                profileRepository.save(existingProfile);
 
         return profileMapper.toResponse(updatedProfile);
     }
 
     public void deleteProfile(Long id) {
 
-        Profile existingProfile = profileRepository.findById(id)
-                .orElseThrow(() -> new ProfileNotFoundException(id));
+        Profile existingProfile =
+                profileRepository.findById(id)
+                        .orElseThrow(
+                                () -> new ProfileNotFoundException(id)
+                        );
 
         profileRepository.delete(existingProfile);
     }

@@ -13,6 +13,15 @@ public class ProfileMapper {
 
         Profile profile = new Profile();
 
+        updateEntity(profile, request);
+
+        return profile;
+    }
+
+    public void updateEntity(
+            Profile profile,
+            ProfileRequest request) {
+
         profile.setName(request.getName());
         profile.setTitle(request.getTitle());
         profile.setAbout(request.getAbout());
@@ -20,8 +29,6 @@ public class ProfileMapper {
         profile.setLocation(request.getLocation());
         profile.setGithubUrl(request.getGithubUrl());
         profile.setLinkedinUrl(request.getLinkedinUrl());
-
-        return profile;
     }
 
     public ProfileResponse toResponse(Profile profile) {

@@ -3,23 +3,26 @@ package com.raju.portfolio.exception;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-public class ValidationErrorResponse {
+public class ApiErrorResponse {
 
     private int status;
     private String message;
     private Map<String, String> errors;
     private LocalDateTime timestamp;
+    private String path;
 
-    public ValidationErrorResponse(
+    public ApiErrorResponse(
             int status,
             String message,
             Map<String, String> errors,
-            LocalDateTime timestamp) {
+            LocalDateTime timestamp,
+            String path) {
 
         this.status = status;
         this.message = message;
         this.errors = errors;
         this.timestamp = timestamp;
+        this.path = path;
     }
 
     public int getStatus() {
@@ -36,5 +39,9 @@ public class ValidationErrorResponse {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public String getPath() {
+        return path;
     }
 }
