@@ -1,0 +1,36 @@
+# Java
+*.class
+*.log
+
+# Maven
+target/
+
+# IDE
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# Eclipse
+.metadata/
+
+# Node
+node_modules/
+dist/
+
+# Environment
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# IDE metadata and sonarlint files
+.metadata/
+.sonarlint/
