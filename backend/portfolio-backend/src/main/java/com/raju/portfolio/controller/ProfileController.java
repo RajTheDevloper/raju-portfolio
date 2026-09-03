@@ -2,6 +2,8 @@ package com.raju.portfolio.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,22 +37,36 @@ public class ProfileController {
     }
 
     @PostMapping
-    public Profile createProfile(@RequestBody Profile profile) {
-        return profileService.saveProfile(profile);
+    public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) {
+
+        Profile savedProfile = profileService.saveProfile(profile);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedProfile);
     }
     
     @PutMapping("/{id}")
-    public Profile updateProfile(
+    public ResponseEntity<Profile> updateProfile(
             @PathVariable Long id,
             @RequestBody Profile profile) {
 
-        profile.setId(id);
+        Profile existingProfile = profileService.getProfileById(id);
 
-        return profileService.saveProfile(profile);
+        profile.setId(existingProfile.getId());
+
+        Profile updatedProfile = profileService.saveProfile(profile);
+
+        return ResponseEntity.ok(updatedProfile);
     }
     
     @DeleteMapping("/{id}")
-    public void deleteProfile(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProfile(@PathVariable Long id) {
+
+        profileService.getProfileById(id);
+
         profileService.deleteProfile(id);
+
+        return ResponseEntity.noContent().build();
     }
 }

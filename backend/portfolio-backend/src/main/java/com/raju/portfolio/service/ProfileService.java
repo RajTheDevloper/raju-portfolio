@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.raju.portfolio.entity.Profile;
+import com.raju.portfolio.exception.ProfileNotFoundException;
 import com.raju.portfolio.repository.ProfileRepository;
 
 @Service
@@ -21,7 +22,8 @@ public class ProfileService {
     }
 
     public Profile getProfileById(Long id) {
-        return profileRepository.findById(id).orElse(null);
+        return profileRepository.findById(id)
+                .orElseThrow(() -> new ProfileNotFoundException(id));
     }
 
     public Profile saveProfile(Profile profile) {
