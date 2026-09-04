@@ -1,12 +1,14 @@
 package com.raju.portfolio.dto;
 
+import java.util.List;
+
 public class ProjectResponse {
 
     private Long id;
     private String name;
     private String slug;
     private String description;
-    private String technologies;
+    private List<TechnologyResponse> technologies;
     private String githubUrl;
     private String liveUrl;
     private String imageUrl;
@@ -48,11 +50,12 @@ public class ProjectResponse {
         this.description = description;
     }
 
-    public String getTechnologies() {
+    public List<TechnologyResponse> getTechnologies() {
         return technologies;
     }
 
-    public void setTechnologies(String technologies) {
+    public void setTechnologies(
+            List<TechnologyResponse> technologies) {
         this.technologies = technologies;
     }
 

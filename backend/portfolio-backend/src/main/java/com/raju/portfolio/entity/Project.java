@@ -1,10 +1,16 @@
 package com.raju.portfolio.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Project {
@@ -20,7 +26,13 @@ public class Project {
 
     private String description;
 
-    private String technologies;
+    @ManyToMany
+    @JoinTable(
+            name = "project_technology",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "technology_id")
+    )
+    private Set<Technology> technologies = new HashSet<>();
 
     private String githubUrl;
 
@@ -67,11 +79,11 @@ public class Project {
         this.description = description;
     }
 
-    public String getTechnologies() {
+    public Set<Technology> getTechnologies() {
         return technologies;
     }
 
-    public void setTechnologies(String technologies) {
+    public void setTechnologies(Set<Technology> technologies) {
         this.technologies = technologies;
     }
 

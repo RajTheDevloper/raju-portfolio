@@ -1,32 +1,45 @@
 package com.raju.portfolio.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.Project;
+import com.raju.portfolio.entity.Technology;
 import com.raju.portfolio.exception.DuplicateProjectSlugException;
 import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
 import com.raju.portfolio.exception.ProjectNotFoundException;
+import com.raju.portfolio.exception.TechnologyNotFoundException;
 import com.raju.portfolio.mapper.ProjectMapper;
 import com.raju.portfolio.repository.ProjectRepository;
+import com.raju.portfolio.repository.TechnologyRepository;
 
 @Service
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+
     private final ProjectMapper projectMapper;
+
+    private final TechnologyRepository technologyRepository;
 
     public ProjectService(
             ProjectRepository projectRepository,
-            ProjectMapper projectMapper) {
+            ProjectMapper projectMapper,
+            TechnologyRepository technologyRepository) {
 
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
+        this.technologyRepository = technologyRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<ProjectResponse> getAllProjects() {
 
         List<Project> projects =
@@ -37,7 +50,9 @@ public class ProjectService {
                 .toList();
     }
 
-    public ProjectResponse getProjectById(Long id) {
+    @Transactional(readOnly = true)
+    public ProjectResponse getProjectById(
+            Long id) {
 
         Project project =
                 projectRepository.findById(id)
@@ -47,8 +62,10 @@ public class ProjectService {
 
         return projectMapper.toResponse(project);
     }
-    
-    public ProjectResponse getProjectBySlug(String slug) {
+
+    @Transactional(readOnly = true)
+    public ProjectResponse getProjectBySlug(
+            String slug) {
 
         Project project =
                 projectRepository.findBySlug(slug)
@@ -59,25 +76,38 @@ public class ProjectService {
         return projectMapper.toResponse(project);
     }
 
+    @Transactional
     public ProjectResponse saveProject(
             ProjectRequest request) {
 
-        if (projectRepository.existsBySlug(request.getSlug())) {
+        if (projectRepository.existsBySlug(
+                request.getSlug())) {
 
             throw new DuplicateProjectSlugException(
                     request.getSlug()
             );
         }
 
+        Set<Technology> technologies =
+                resolveTechnologies(
+                        request.getTechnologyIds()
+                );
+
         Project project =
-                projectMapper.toEntity(request);
+                projectMapper.toEntity(
+                        request,
+                        technologies
+                );
 
         Project savedProject =
                 projectRepository.save(project);
 
-        return projectMapper.toResponse(savedProject);
+        return projectMapper.toResponse(
+                savedProject
+        );
     }
 
+    @Transactional
     public ProjectResponse updateProject(
             Long id,
             ProjectRequest request) {
@@ -97,17 +127,28 @@ public class ProjectService {
             );
         }
 
+        Set<Technology> technologies =
+                resolveTechnologies(
+                        request.getTechnologyIds()
+                );
+
         projectMapper.updateEntity(
                 existingProject,
-                request
+                request,
+                technologies
         );
 
         Project updatedProject =
-                projectRepository.save(existingProject);
+                projectRepository.save(
+                        existingProject
+                );
 
-        return projectMapper.toResponse(updatedProject);
+        return projectMapper.toResponse(
+                updatedProject
+        );
     }
 
+    @Transactional
     public void deleteProject(Long id) {
 
         Project existingProject =
@@ -116,6 +157,38 @@ public class ProjectService {
                                 () -> new ProjectNotFoundException(id)
                         );
 
-        projectRepository.delete(existingProject);
+        projectRepository.delete(
+                existingProject
+        );
+    }
+
+    private Set<Technology> resolveTechnologies(
+            Set<Long> technologyIds) {
+
+        List<Technology> technologies =
+                technologyRepository.findAllById(
+                        technologyIds
+                );
+
+        if (technologies.size()
+                != technologyIds.size()) {
+
+            Set<Long> foundIds =
+                    technologies.stream()
+                            .map(Technology::getId)
+                            .collect(Collectors.toSet());
+
+            Long missingId =
+                    technologyIds.stream()
+                            .filter(id -> !foundIds.contains(id))
+                            .findFirst()
+                            .orElseThrow();
+
+            throw new TechnologyNotFoundException(
+                    missingId
+            );
+        }
+
+        return new HashSet<>(technologies);
     }
 }

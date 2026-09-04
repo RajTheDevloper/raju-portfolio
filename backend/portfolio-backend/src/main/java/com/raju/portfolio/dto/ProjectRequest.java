@@ -1,34 +1,54 @@
 package com.raju.portfolio.dto;
 
+import java.util.Set;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class ProjectRequest {
 
     @NotBlank(message = "Project name is required")
-    @Size(max = 150, message = "Project name must not exceed 150 characters")
+    @Size(
+            max = 150,
+            message = "Project name must not exceed 150 characters"
+    )
     private String name;
 
     @NotBlank(message = "Slug is required")
-    @Size(max = 200, message = "Slug must not exceed 200 characters")
+    @Size(
+            max = 200,
+            message = "Slug must not exceed 200 characters"
+    )
     private String slug;
 
     @NotBlank(message = "Description is required")
-    @Size(max = 5000, message = "Description must not exceed 5000 characters")
+    @Size(
+            max = 5000,
+            message = "Description must not exceed 5000 characters"
+    )
     private String description;
 
-    @NotBlank(message = "Technologies are required")
-    @Size(max = 1000, message = "Technologies must not exceed 1000 characters")
-    private String technologies;
+    @NotEmpty(message = "At least one technology is required")
+    private Set<Long> technologyIds;
 
-    @Size(max = 500, message = "GitHub URL must not exceed 500 characters")
+    @Size(
+            max = 500,
+            message = "GitHub URL must not exceed 500 characters"
+    )
     private String githubUrl;
 
-    @Size(max = 500, message = "Live URL must not exceed 500 characters")
+    @Size(
+            max = 500,
+            message = "Live URL must not exceed 500 characters"
+    )
     private String liveUrl;
 
-    @Size(max = 500, message = "Image URL must not exceed 500 characters")
+    @Size(
+            max = 500,
+            message = "Image URL must not exceed 500 characters"
+    )
     private String imageUrl;
 
     @NotNull(message = "Featured value is required")
@@ -64,12 +84,12 @@ public class ProjectRequest {
         this.description = description;
     }
 
-    public String getTechnologies() {
-        return technologies;
+    public Set<Long> getTechnologyIds() {
+        return technologyIds;
     }
 
-    public void setTechnologies(String technologies) {
-        this.technologies = technologies;
+    public void setTechnologyIds(Set<Long> technologyIds) {
+        this.technologyIds = technologyIds;
     }
 
     public String getGithubUrl() {
