@@ -5,6 +5,8 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,6 +45,10 @@ public class Project {
     private boolean featured;
 
     private Integer displayOrder;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private ProjectStatus status = ProjectStatus.DRAFT;
 
     public Project() {
     }
@@ -125,5 +131,13 @@ public class Project {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
+    }
+    
+    public ProjectStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProjectStatus status) {
+        this.status = status;
     }
 }

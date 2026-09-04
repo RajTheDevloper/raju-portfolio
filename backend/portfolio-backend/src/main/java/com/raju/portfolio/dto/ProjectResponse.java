@@ -14,6 +14,7 @@ public class ProjectResponse {
     private String imageUrl;
     private boolean featured;
     private Integer displayOrder;
+    private String status;
 
     public ProjectResponse() {
     }
@@ -97,5 +98,13 @@ public class ProjectResponse {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

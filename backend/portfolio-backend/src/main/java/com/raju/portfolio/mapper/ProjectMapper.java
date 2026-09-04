@@ -77,6 +77,10 @@ public class ProjectMapper {
         response.setImageUrl(project.getImageUrl());
         response.setFeatured(project.isFeatured());
         response.setDisplayOrder(project.getDisplayOrder());
+        
+        response.setStatus(
+                project.getStatus().name()
+        );
 
         return response;
     }

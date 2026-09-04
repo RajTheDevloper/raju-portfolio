@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.Project;
+import com.raju.portfolio.entity.ProjectStatus;
 import com.raju.portfolio.entity.Technology;
 import com.raju.portfolio.exception.DuplicateProjectSlugException;
 import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
@@ -190,5 +191,19 @@ public class ProjectService {
         }
 
         return new HashSet<>(technologies);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<ProjectResponse> getPublishedProjects() {
+
+        List<Project> projects =
+                projectRepository
+                        .findAllByStatusOrderByDisplayOrderAsc(
+                                ProjectStatus.PUBLISHED
+                        );
+
+        return projects.stream()
+                .map(projectMapper::toResponse)
+                .toList();
     }
 }
