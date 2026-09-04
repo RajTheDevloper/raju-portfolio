@@ -5,6 +5,7 @@ import java.util.Set;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class ProjectRequest {
@@ -37,11 +38,19 @@ public class ProjectRequest {
             max = 500,
             message = "GitHub URL must not exceed 500 characters"
     )
+    @Pattern(
+            regexp = "^$|https?://.*$",
+            message = "GitHub URL must be a valid HTTP or HTTPS URL"
+    )
     private String githubUrl;
 
     @Size(
             max = 500,
             message = "Live URL must not exceed 500 characters"
+    )
+    @Pattern(
+            regexp = "^$|https?://.*$",
+            message = "Live URL must be a valid HTTP or HTTPS URL"
     )
     private String liveUrl;
 

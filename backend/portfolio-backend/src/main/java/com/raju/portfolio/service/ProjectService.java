@@ -42,8 +42,8 @@ public class ProjectService {
     @Transactional(readOnly = true)
     public List<ProjectResponse> getAllProjects() {
 
-        List<Project> projects =
-                projectRepository.findAll();
+    	List<Project> projects =
+    	        projectRepository.findAllByOrderByDisplayOrderAsc();
 
         return projects.stream()
                 .map(projectMapper::toResponse)
