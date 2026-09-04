@@ -89,6 +89,63 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(errorResponse);
     }
+    
+    @ExceptionHandler(TechnologyNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleTechnologyNotFound(
+            TechnologyNotFoundException exception,
+            WebRequest request) {
+
+        ApiErrorResponse errorResponse =
+                new ApiErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        exception.getMessage(),
+                        Map.of(),
+                        LocalDateTime.now(),
+                        getRequestPath(request)
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
+    
+    @ExceptionHandler(TechnologyNotFoundBySlugException.class)
+    public ResponseEntity<ApiErrorResponse> handleTechnologyNotFoundBySlug(
+            TechnologyNotFoundBySlugException exception,
+            WebRequest request) {
+
+        ApiErrorResponse errorResponse =
+                new ApiErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        exception.getMessage(),
+                        Map.of(),
+                        LocalDateTime.now(),
+                        getRequestPath(request)
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
+    
+    @ExceptionHandler(DuplicateTechnologySlugException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateTechnologySlug(
+            DuplicateTechnologySlugException exception,
+            WebRequest request) {
+
+        ApiErrorResponse errorResponse =
+                new ApiErrorResponse(
+                        HttpStatus.CONFLICT.value(),
+                        exception.getMessage(),
+                        Map.of(),
+                        LocalDateTime.now(),
+                        getRequestPath(request)
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(errorResponse);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationErrors(
