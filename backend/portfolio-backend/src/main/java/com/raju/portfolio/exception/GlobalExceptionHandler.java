@@ -51,6 +51,25 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(errorResponse);
     }
+    
+    @ExceptionHandler(ProjectNotFoundBySlugException.class)
+    public ResponseEntity<ApiErrorResponse> handleProjectNotFoundBySlug(
+            ProjectNotFoundBySlugException exception,
+            WebRequest request) {
+
+        ApiErrorResponse errorResponse =
+                new ApiErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        exception.getMessage(),
+                        Map.of(),
+                        LocalDateTime.now(),
+                        getRequestPath(request)
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationErrors(

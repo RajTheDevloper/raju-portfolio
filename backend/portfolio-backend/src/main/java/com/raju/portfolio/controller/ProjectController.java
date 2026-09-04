@@ -47,6 +47,16 @@ public class ProjectController {
 
         return ResponseEntity.ok(project);
     }
+    
+    @GetMapping("/by-slug/{slug}")
+    public ResponseEntity<ProjectResponse> getProjectBySlug(
+            @PathVariable String slug) {
+
+        ProjectResponse project =
+                projectService.getProjectBySlug(slug);
+
+        return ResponseEntity.ok(project);
+    }
 
     @PostMapping
     public ResponseEntity<ProjectResponse> createProject(

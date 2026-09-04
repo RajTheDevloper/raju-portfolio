@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.Project;
+import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
 import com.raju.portfolio.exception.ProjectNotFoundException;
 import com.raju.portfolio.mapper.ProjectMapper;
 import com.raju.portfolio.repository.ProjectRepository;
@@ -41,6 +42,17 @@ public class ProjectService {
                 projectRepository.findById(id)
                         .orElseThrow(
                                 () -> new ProjectNotFoundException(id)
+                        );
+
+        return projectMapper.toResponse(project);
+    }
+    
+    public ProjectResponse getProjectBySlug(String slug) {
+
+        Project project =
+                projectRepository.findBySlug(slug)
+                        .orElseThrow(
+                                () -> new ProjectNotFoundBySlugException(slug)
                         );
 
         return projectMapper.toResponse(project);
