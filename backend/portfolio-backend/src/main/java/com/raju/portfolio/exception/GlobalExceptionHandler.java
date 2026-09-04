@@ -70,6 +70,25 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(errorResponse);
     }
+    
+    @ExceptionHandler(DuplicateProjectSlugException.class)
+    public ResponseEntity<ApiErrorResponse> handleDuplicateProjectSlug(
+            DuplicateProjectSlugException exception,
+            WebRequest request) {
+
+        ApiErrorResponse errorResponse =
+                new ApiErrorResponse(
+                        HttpStatus.CONFLICT.value(),
+                        exception.getMessage(),
+                        Map.of(),
+                        LocalDateTime.now(),
+                        getRequestPath(request)
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(errorResponse);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationErrors(

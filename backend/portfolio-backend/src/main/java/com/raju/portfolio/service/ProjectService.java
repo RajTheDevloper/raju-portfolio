@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.Project;
+import com.raju.portfolio.exception.DuplicateProjectSlugException;
 import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
 import com.raju.portfolio.exception.ProjectNotFoundException;
 import com.raju.portfolio.mapper.ProjectMapper;
@@ -61,6 +62,13 @@ public class ProjectService {
     public ProjectResponse saveProject(
             ProjectRequest request) {
 
+        if (projectRepository.existsBySlug(request.getSlug())) {
+
+            throw new DuplicateProjectSlugException(
+                    request.getSlug()
+            );
+        }
+
         Project project =
                 projectMapper.toEntity(request);
 
@@ -79,6 +87,15 @@ public class ProjectService {
                         .orElseThrow(
                                 () -> new ProjectNotFoundException(id)
                         );
+
+        if (projectRepository.existsBySlugAndIdNot(
+                request.getSlug(),
+                id)) {
+
+            throw new DuplicateProjectSlugException(
+                    request.getSlug()
+            );
+        }
 
         projectMapper.updateEntity(
                 existingProject,

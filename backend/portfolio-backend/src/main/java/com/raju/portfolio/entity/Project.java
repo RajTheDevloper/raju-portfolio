@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 
 @Entity
 public class Project {
@@ -14,6 +15,7 @@ public class Project {
 
     private String name;
 
+    @Column(nullable = false, unique = true, length = 200)
     private String slug;
 
     private String description;
