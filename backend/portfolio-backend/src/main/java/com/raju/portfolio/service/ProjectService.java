@@ -206,4 +206,20 @@ public class ProjectService {
                 .map(projectMapper::toResponse)
                 .toList();
     }
+    
+    @Transactional(readOnly = true)
+    public ProjectResponse getPublishedProjectBySlug(String slug) {
+
+        Project project =
+                projectRepository.findBySlug(slug)
+                        .orElseThrow(() ->
+                                new ProjectNotFoundBySlugException(slug)
+                        );
+
+        if (project.getStatus() != ProjectStatus.PUBLISHED) {
+            throw new ProjectNotFoundBySlugException(slug);
+        }
+
+        return projectMapper.toResponse(project);
+    }
 }
