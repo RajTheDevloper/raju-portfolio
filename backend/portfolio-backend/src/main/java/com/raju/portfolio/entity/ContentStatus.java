@@ -1,10 +1,8 @@
 package com.raju.portfolio.entity;
 
-public enum ProjectStatus {
+public enum ContentStatus {
 
     DRAFT,
-
     PUBLISHED,
-
     ARCHIVED
 }

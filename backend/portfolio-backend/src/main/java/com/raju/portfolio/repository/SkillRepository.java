@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.raju.portfolio.entity.ProjectStatus;
+import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.entity.Skill;
 
 public interface SkillRepository
@@ -22,8 +22,8 @@ public interface SkillRepository
     List<Skill> findAllByOrderByDisplayOrderAsc();
 
     List<Skill> findAllByStatusOrderByDisplayOrderAsc(
-            ProjectStatus status);
+    		ContentStatus status);
 
     List<Skill> findAllByStatusAndFeaturedTrueOrderByDisplayOrderAsc(
-            ProjectStatus status);
+    		ContentStatus status);
 }

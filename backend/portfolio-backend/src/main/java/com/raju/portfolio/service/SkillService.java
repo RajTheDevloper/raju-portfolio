@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.raju.portfolio.dto.SkillRequest;
 import com.raju.portfolio.dto.SkillResponse;
-import com.raju.portfolio.entity.ProjectStatus;
+import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.entity.Skill;
 import com.raju.portfolio.exception.SkillNotFoundException;
 import com.raju.portfolio.mapper.SkillMapper;
@@ -78,7 +78,7 @@ public class SkillService {
                 skillMapper.toEntity(request);
 
         skill.setStatus(
-                ProjectStatus.DRAFT
+                ContentStatus.DRAFT
         );
 
         Skill savedSkill =
@@ -140,7 +140,7 @@ public class SkillService {
 
         return skillRepository
                 .findAllByStatusOrderByDisplayOrderAsc(
-                        ProjectStatus.PUBLISHED
+                        ContentStatus.PUBLISHED
                 )
                 .stream()
                 .map(skillMapper::toResponse)
@@ -153,7 +153,7 @@ public class SkillService {
 
         return skillRepository
                 .findAllByStatusAndFeaturedTrueOrderByDisplayOrderAsc(
-                        ProjectStatus.PUBLISHED
+                        ContentStatus.PUBLISHED
                 )
                 .stream()
                 .map(skillMapper::toResponse)
@@ -172,7 +172,7 @@ public class SkillService {
                         );
 
         if (skill.getStatus()
-                != ProjectStatus.PUBLISHED) {
+                != ContentStatus.PUBLISHED) {
 
             throw new SkillNotFoundException(slug);
         }
@@ -191,7 +191,7 @@ public class SkillService {
                         );
 
         skill.setStatus(
-                ProjectStatus.PUBLISHED
+                ContentStatus.PUBLISHED
         );
 
         return skillMapper.toResponse(
@@ -210,7 +210,7 @@ public class SkillService {
                         );
 
         skill.setStatus(
-                ProjectStatus.DRAFT
+                ContentStatus.DRAFT
         );
 
         return skillMapper.toResponse(
@@ -229,7 +229,7 @@ public class SkillService {
                         );
 
         skill.setStatus(
-                ProjectStatus.ARCHIVED
+                ContentStatus.ARCHIVED
         );
 
         return skillMapper.toResponse(

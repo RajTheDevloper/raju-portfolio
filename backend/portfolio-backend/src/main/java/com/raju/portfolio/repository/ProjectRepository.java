@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.raju.portfolio.entity.Project;
-import com.raju.portfolio.entity.ProjectStatus;
+import com.raju.portfolio.entity.ContentStatus;
 
 public interface ProjectRepository
         extends JpaRepository<Project, Long> {
@@ -23,6 +23,6 @@ public interface ProjectRepository
     List<Project> findAllByOrderByDisplayOrderAsc();
     
     List<Project> findAllByStatusOrderByDisplayOrderAsc(
-            ProjectStatus status
+            ContentStatus status
     );
 }

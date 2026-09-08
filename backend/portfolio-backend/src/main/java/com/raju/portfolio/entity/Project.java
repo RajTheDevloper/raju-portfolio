@@ -48,7 +48,7 @@ public class Project {
     
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private ProjectStatus status = ProjectStatus.DRAFT;
+    private ContentStatus status = ContentStatus.DRAFT;
 
     public Project() {
     }
@@ -133,11 +133,11 @@ public class Project {
         this.displayOrder = displayOrder;
     }
     
-    public ProjectStatus getStatus() {
+    public ContentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ProjectStatus status) {
+    public void setStatus(ContentStatus status) {
         this.status = status;
     }
 }

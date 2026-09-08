@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.entity.Experience;
-import com.raju.portfolio.entity.ProjectStatus;
 
 public interface ExperienceRepository
         extends JpaRepository<Experience, Long> {
@@ -14,9 +14,9 @@ public interface ExperienceRepository
     List<Experience> findAllByOrderByDisplayOrderAsc();
 
     List<Experience> findAllByStatusOrderByDisplayOrderAsc(
-            ProjectStatus status);
+            ContentStatus status);
 
     Optional<Experience> findByIdAndStatus(
             Long id,
-            ProjectStatus status);
+            ContentStatus status);
 }

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.raju.portfolio.dto.ExperienceRequest;
 import com.raju.portfolio.dto.ExperienceResponse;
 import com.raju.portfolio.entity.Experience;
-import com.raju.portfolio.entity.ProjectStatus;
+import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.exception.ExperienceNotFoundException;
 import com.raju.portfolio.mapper.ExperienceMapper;
 import com.raju.portfolio.repository.ExperienceRepository;
@@ -58,7 +58,7 @@ public class ExperienceService {
         Experience experience =
                 experienceMapper.toEntity(request);
 
-        experience.setStatus(ProjectStatus.DRAFT);
+        experience.setStatus(ContentStatus.DRAFT);
 
         Experience savedExperience =
                 experienceRepository.save(experience);
@@ -109,7 +109,7 @@ public class ExperienceService {
 
         return experienceRepository
                 .findAllByStatusOrderByDisplayOrderAsc(
-                        ProjectStatus.PUBLISHED
+                        ContentStatus.PUBLISHED
                 )
                 .stream()
                 .map(experienceMapper::toResponse)
@@ -124,7 +124,7 @@ public class ExperienceService {
                 experienceRepository
                         .findByIdAndStatus(
                                 id,
-                                ProjectStatus.PUBLISHED
+                                ContentStatus.PUBLISHED
                         )
                         .orElseThrow(() ->
                                 new ExperienceNotFoundException(id)
@@ -142,7 +142,7 @@ public class ExperienceService {
                                 new ExperienceNotFoundException(id)
                         );
 
-        experience.setStatus(ProjectStatus.PUBLISHED);
+        experience.setStatus(ContentStatus.PUBLISHED);
 
         Experience publishedExperience =
                 experienceRepository.save(experience);
@@ -161,7 +161,7 @@ public class ExperienceService {
                                 new ExperienceNotFoundException(id)
                         );
 
-        experience.setStatus(ProjectStatus.ARCHIVED);
+        experience.setStatus(ContentStatus.ARCHIVED);
 
         Experience archivedExperience =
                 experienceRepository.save(experience);
@@ -180,7 +180,7 @@ public class ExperienceService {
                                 new ExperienceNotFoundException(id)
                         );
 
-        experience.setStatus(ProjectStatus.DRAFT);
+        experience.setStatus(ContentStatus.DRAFT);
 
         Experience unpublishedExperience =
                 experienceRepository.save(experience);

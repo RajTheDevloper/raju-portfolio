@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.Project;
-import com.raju.portfolio.entity.ProjectStatus;
+import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.entity.Technology;
 import com.raju.portfolio.exception.DuplicateProjectSlugException;
 import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
@@ -199,7 +199,7 @@ public class ProjectService {
         List<Project> projects =
                 projectRepository
                         .findAllByStatusOrderByDisplayOrderAsc(
-                                ProjectStatus.PUBLISHED
+								ContentStatus.PUBLISHED
                         );
 
         return projects.stream()
@@ -216,7 +216,7 @@ public class ProjectService {
                                 new ProjectNotFoundBySlugException(slug)
                         );
 
-        if (project.getStatus() != ProjectStatus.PUBLISHED) {
+        if (project.getStatus() != ContentStatus.PUBLISHED) {
             throw new ProjectNotFoundBySlugException(slug);
         }
 

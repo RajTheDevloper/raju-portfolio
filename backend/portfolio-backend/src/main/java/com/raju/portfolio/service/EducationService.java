@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.raju.portfolio.dto.EducationRequest;
 import com.raju.portfolio.dto.EducationResponse;
 import com.raju.portfolio.entity.Education;
-import com.raju.portfolio.entity.ProjectStatus;
+import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.exception.EducationNotFoundException;
 import com.raju.portfolio.mapper.EducationMapper;
 import com.raju.portfolio.repository.EducationRepository;
@@ -59,7 +59,7 @@ public class EducationService {
                 educationMapper.toEntity(request);
 
         education.setStatus(
-                ProjectStatus.DRAFT
+                ContentStatus.DRAFT
         );
 
         Education savedEducation =
@@ -114,7 +114,7 @@ public class EducationService {
 
         return educationRepository
                 .findAllByStatusOrderByDisplayOrderAsc(
-                        ProjectStatus.PUBLISHED
+                        ContentStatus.PUBLISHED
                 )
                 .stream()
                 .map(educationMapper::toResponse)
@@ -129,7 +129,7 @@ public class EducationService {
                 educationRepository
                         .findByIdAndStatus(
                                 id,
-                                ProjectStatus.PUBLISHED
+                                ContentStatus.PUBLISHED
                         )
                         .orElseThrow(() ->
                                 new EducationNotFoundException(id)
@@ -151,7 +151,7 @@ public class EducationService {
                         );
 
         education.setStatus(
-                ProjectStatus.PUBLISHED
+                ContentStatus.PUBLISHED
         );
 
         return educationMapper.toResponse(
@@ -170,7 +170,7 @@ public class EducationService {
                         );
 
         education.setStatus(
-                ProjectStatus.DRAFT
+                ContentStatus.DRAFT
         );
 
         return educationMapper.toResponse(
@@ -189,7 +189,7 @@ public class EducationService {
                         );
 
         education.setStatus(
-                ProjectStatus.ARCHIVED
+                ContentStatus.ARCHIVED
         );
 
         return educationMapper.toResponse(
