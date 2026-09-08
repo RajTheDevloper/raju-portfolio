@@ -1,13 +1,11 @@
 package com.raju.portfolio.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.raju.portfolio.dto.ProfileRequest;
 import com.raju.portfolio.dto.ProfileResponse;
 import com.raju.portfolio.entity.Profile;
-import com.raju.portfolio.exception.ProfileNotFoundException;
 import com.raju.portfolio.mapper.ProfileMapper;
 import com.raju.portfolio.repository.ProfileRepository;
 
@@ -25,64 +23,38 @@ public class ProfileService {
         this.profileMapper = profileMapper;
     }
 
-    public List<ProfileResponse> getAllProfiles() {
+    @Transactional(readOnly = true)
+    public ProfileResponse getProfile() {
 
-        List<Profile> profiles =
-                profileRepository.findAll();
-
-        return profiles.stream()
-                .map(profileMapper::toResponse)
-                .toList();
-    }
-
-    public ProfileResponse getProfileById(Long id) {
-
-        Profile profile = profileRepository.findById(id)
-                .orElseThrow(() -> new ProfileNotFoundException(id));
+        Profile profile =
+                profileRepository.findTopByOrderByIdAsc()
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Profile not configured"
+                                )
+                        );
 
         return profileMapper.toResponse(profile);
     }
 
-    public ProfileResponse saveProfile(ProfileRequest request) {
+    @Transactional
+    public ProfileResponse updateProfile(
+            ProfileRequest request) {
 
         Profile profile =
-                profileMapper.toEntity(request);
+                profileRepository.findTopByOrderByIdAsc()
+                        .orElseGet(Profile::new);
+
+        profileMapper.updateEntity(
+                profile,
+                request
+        );
 
         Profile savedProfile =
                 profileRepository.save(profile);
 
-        return profileMapper.toResponse(savedProfile);
-    }
-
-    public ProfileResponse updateProfile(
-            Long id,
-            ProfileRequest request) {
-
-        Profile existingProfile =
-                profileRepository.findById(id)
-                        .orElseThrow(
-                                () -> new ProfileNotFoundException(id)
-                        );
-
-        profileMapper.updateEntity(
-                existingProfile,
-                request
+        return profileMapper.toResponse(
+                savedProfile
         );
-
-        Profile updatedProfile =
-                profileRepository.save(existingProfile);
-
-        return profileMapper.toResponse(updatedProfile);
-    }
-
-    public void deleteProfile(Long id) {
-
-        Profile existingProfile =
-                profileRepository.findById(id)
-                        .orElseThrow(
-                                () -> new ProfileNotFoundException(id)
-                        );
-
-        profileRepository.delete(existingProfile);
     }
 }
