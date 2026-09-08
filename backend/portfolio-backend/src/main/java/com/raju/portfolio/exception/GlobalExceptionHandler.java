@@ -236,6 +236,26 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(error);
     }
+    
+    @ExceptionHandler(SkillNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse>
+            handleSkillNotFound(
+                    SkillNotFoundException exception,
+                    HttpServletRequest request) {
+
+        ApiErrorResponse error =
+                new ApiErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        exception.getMessage(),
+                        null,
+                        LocalDateTime.now(),
+                        request.getRequestURI()
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
 
     private String getRequestPath(WebRequest request) {
 
