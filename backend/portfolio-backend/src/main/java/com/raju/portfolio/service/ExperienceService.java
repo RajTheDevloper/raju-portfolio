@@ -132,6 +132,63 @@ public class ExperienceService {
 
         return experienceMapper.toResponse(experience);
     }
+    
+    @Transactional
+    public ExperienceResponse publishExperience(Long id) {
+
+        Experience experience =
+                experienceRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ExperienceNotFoundException(id)
+                        );
+
+        experience.setStatus(ProjectStatus.PUBLISHED);
+
+        Experience publishedExperience =
+                experienceRepository.save(experience);
+
+        return experienceMapper.toResponse(
+                publishedExperience
+        );
+    }
+    
+    @Transactional
+    public ExperienceResponse archiveExperience(Long id) {
+
+        Experience experience =
+                experienceRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ExperienceNotFoundException(id)
+                        );
+
+        experience.setStatus(ProjectStatus.ARCHIVED);
+
+        Experience archivedExperience =
+                experienceRepository.save(experience);
+
+        return experienceMapper.toResponse(
+                archivedExperience
+        );
+    }
+    
+    @Transactional
+    public ExperienceResponse unpublishExperience(Long id) {
+
+        Experience experience =
+                experienceRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ExperienceNotFoundException(id)
+                        );
+
+        experience.setStatus(ProjectStatus.DRAFT);
+
+        Experience unpublishedExperience =
+                experienceRepository.save(experience);
+
+        return experienceMapper.toResponse(
+                unpublishedExperience
+        );
+    }
 
     private void validateDates(
             ExperienceRequest request) {

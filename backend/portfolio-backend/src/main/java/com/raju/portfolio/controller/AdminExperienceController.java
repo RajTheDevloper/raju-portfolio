@@ -94,4 +94,34 @@ public class AdminExperienceController {
                 .noContent()
                 .build();
     }
+    
+    @PostMapping("/{id}/publish")
+    public ResponseEntity<ExperienceResponse>
+            publishExperience(
+                    @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                experienceService.publishExperience(id)
+        );
+    }
+    
+    @PostMapping("/{id}/archive")
+    public ResponseEntity<ExperienceResponse>
+            archiveExperience(
+                    @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                experienceService.archiveExperience(id)
+        );
+    }
+    
+    @PostMapping("/{id}/unpublish")
+    public ResponseEntity<ExperienceResponse>
+            unpublishExperience(
+                    @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                experienceService.unpublishExperience(id)
+        );
+    }
 }
