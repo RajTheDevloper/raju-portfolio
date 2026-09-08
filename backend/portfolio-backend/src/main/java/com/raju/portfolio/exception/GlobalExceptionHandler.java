@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -175,6 +177,44 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(errorResponse);
+    }
+    
+    @ExceptionHandler(ExperienceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleExperienceNotFound(
+            ExperienceNotFoundException exception,
+            HttpServletRequest request) {
+
+        ApiErrorResponse error =
+                new ApiErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        exception.getMessage(),
+                        null,
+                        LocalDateTime.now(),
+                        request.getRequestURI()
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgument(
+            IllegalArgumentException exception,
+            HttpServletRequest request) {
+
+        ApiErrorResponse error =
+                new ApiErrorResponse(
+                        HttpStatus.BAD_REQUEST.value(),
+                        exception.getMessage(),
+                        null,
+                        LocalDateTime.now(),
+                        request.getRequestURI()
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
     }
 
     private String getRequestPath(WebRequest request) {
