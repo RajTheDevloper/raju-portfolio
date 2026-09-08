@@ -216,6 +216,26 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(error);
     }
+    
+    @ExceptionHandler(EducationNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse>
+            handleEducationNotFound(
+                    EducationNotFoundException exception,
+                    HttpServletRequest request) {
+
+        ApiErrorResponse error =
+                new ApiErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
+                        exception.getMessage(),
+                        null,
+                        LocalDateTime.now(),
+                        request.getRequestURI()
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
 
     private String getRequestPath(WebRequest request) {
 
