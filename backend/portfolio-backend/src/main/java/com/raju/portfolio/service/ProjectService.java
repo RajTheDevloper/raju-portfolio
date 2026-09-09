@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
+import com.raju.portfolio.entity.ContentRevision;
 import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.entity.Project;
 import com.raju.portfolio.entity.Technology;
@@ -151,6 +152,13 @@ public class ProjectService {
                 technologies
         );
 
+        /*
+         * Every update is treated as a draft change.
+         */
+        existingProject.setStatus(
+                ContentStatus.DRAFT
+        );
+
         Project updatedProject =
                 projectRepository.save(
                         existingProject
@@ -164,7 +172,7 @@ public class ProjectService {
         contentRevisionService.createRevision(
                 "PROJECT",
                 updatedProject.getId(),
-                updatedProject.getStatus().name(),
+                ContentStatus.DRAFT.name(),
                 "system",
                 response
         );
@@ -221,12 +229,15 @@ public class ProjectService {
 
         List<Project> projects =
                 projectRepository
-                        .findAllByStatusOrderByDisplayOrderAsc(
-                                ContentStatus.PUBLISHED
-                        );
+                        .findAllByPublishedRevisionIsNotNullOrderByDisplayOrderAsc();
 
         return projects.stream()
-                .map(projectMapper::toResponse)
+                .map(project ->
+                        contentRevisionService
+                                .getProjectResponseFromRevision(
+                                        project.getPublishedRevision()
+                                )
+                )
                 .toList();
     }
 
@@ -240,14 +251,133 @@ public class ProjectService {
                                 () -> new ProjectNotFoundBySlugException(slug)
                         );
 
-        if (project.getStatus()
-                != ContentStatus.PUBLISHED) {
+        if (project.getPublishedRevision() == null) {
 
-            throw new ProjectNotFoundBySlugException(
-                    slug
-            );
+            throw new ProjectNotFoundBySlugException(slug);
         }
 
-        return projectMapper.toResponse(project);
+        return contentRevisionService
+                .getProjectResponseFromRevision(
+                        project.getPublishedRevision()
+                );
     }
+    
+    
+    @Transactional
+    public ProjectResponse publishProject(Long id) {
+
+        // 1. Find the project
+        Project project =
+                projectRepository.findById(id)
+                        .orElseThrow(
+                                () -> new ProjectNotFoundException(id)
+                        );
+
+        // 2. Change the current project status to PUBLISHED
+        project.setStatus(ContentStatus.PUBLISHED);
+
+        // 3. Save the project
+        Project publishedProject =
+                projectRepository.save(project);
+
+        // 4. Convert the published project into a response object
+        ProjectResponse response =
+                projectMapper.toResponse(publishedProject);
+
+        // 5. Create a new PUBLISHED revision
+        ContentRevision publishedRevision =
+                contentRevisionService.createRevision(
+                        "PROJECT",
+                        publishedProject.getId(),
+                        ContentStatus.PUBLISHED.name(),
+                        "system",
+                        response
+                );
+
+        // 6. Connect this published revision to the project
+        publishedProject.setPublishedRevision(publishedRevision);
+
+        // 7. Save the project again
+        projectRepository.save(publishedProject);
+
+        // 8. Return the published project
+        return response;
+    }
+
+    
+    @Transactional
+    public ProjectResponse archiveProject(Long id) {
+
+        // 1. Find the project
+        Project project =
+                projectRepository.findById(id)
+                        .orElseThrow(
+                                () -> new ProjectNotFoundException(id)
+                        );
+
+        // 2. Change status to ARCHIVED
+        project.setStatus(ContentStatus.ARCHIVED);
+
+        // 3. Remove the published revision
+        project.setPublishedRevision(null);
+
+        // 4. Save the project
+        Project archivedProject =
+                projectRepository.save(project);
+
+        // 5. Convert to response
+        ProjectResponse response =
+                projectMapper.toResponse(archivedProject);
+
+        // 6. Create an ARCHIVED revision
+        contentRevisionService.createRevision(
+                "PROJECT",
+                archivedProject.getId(),
+                ContentStatus.ARCHIVED.name(),
+                "system",
+                response
+        );
+
+        // 7. Return the archived project
+        return response;
+    }
+    
+
+    @Transactional
+    public ProjectResponse unpublishProject(Long id) {
+
+        // 1. Find the project
+        Project project =
+                projectRepository.findById(id)
+                        .orElseThrow(
+                                () -> new ProjectNotFoundException(id)
+                        );
+
+        // 2. Change project back to DRAFT
+        project.setStatus(ContentStatus.DRAFT);
+
+        // 3. Remove the published revision
+        project.setPublishedRevision(null);
+
+        // 4. Save the project
+        Project unpublishedProject =
+                projectRepository.save(project);
+
+        // 5. Create a new DRAFT revision
+        ProjectResponse response =
+                projectMapper.toResponse(unpublishedProject);
+
+        contentRevisionService.createRevision(
+                "PROJECT",
+                unpublishedProject.getId(),
+                ContentStatus.DRAFT.name(),
+                "system",
+                response
+        );
+
+        // 6. Return the project
+        return response;
+    }
+
+    
 }

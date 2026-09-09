@@ -21,4 +21,10 @@ public interface ContentRevisionRepository
             String contentType,
             Long contentId
     );
+    
+    Optional<ContentRevision>
+    findTopByContentTypeAndContentIdAndStatusOrderByVersionNumberDesc(
+            String contentType,
+            Long contentId,
+            String status);
 }

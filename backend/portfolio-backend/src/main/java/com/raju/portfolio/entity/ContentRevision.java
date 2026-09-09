@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 @Entity
 public class ContentRevision {
@@ -33,7 +34,7 @@ public class ContentRevision {
     @Column(length = 100)
     private String createdBy;
 
-    @Column(length = 5000)
+    @Lob
     private String snapshot;
 
     public ContentRevision() {

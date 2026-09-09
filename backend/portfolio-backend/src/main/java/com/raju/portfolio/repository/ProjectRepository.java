@@ -25,4 +25,7 @@ public interface ProjectRepository
     List<Project> findAllByStatusOrderByDisplayOrderAsc(
             ContentStatus status
     );
+    
+    List<Project>
+    findAllByPublishedRevisionIsNotNullOrderByDisplayOrderAsc();
 }

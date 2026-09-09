@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.ContentRevision;
 import com.raju.portfolio.repository.ContentRevisionRepository;
 
@@ -104,6 +105,59 @@ public class ContentRevisionService {
                         revision.getVersionNumber() + 1
                 )
                 .orElse(1);
+    }
+    
+    @Transactional(readOnly = true)
+    public ProjectResponse getPublishedProject(
+            Long projectId) {
+
+        ContentRevision revision =
+                contentRevisionRepository
+                        .findTopByContentTypeAndContentIdAndStatusOrderByVersionNumberDesc(
+                                "PROJECT",
+                                projectId,
+                                "PUBLISHED"
+                        )
+                        .orElseThrow(
+                                () -> new IllegalStateException(
+                                        "Published project revision not found"
+                                )
+                        );
+
+        try {
+
+            return objectMapper.readValue(
+                    revision.getSnapshot(),
+                    ProjectResponse.class
+            );
+
+        } catch (JacksonException exception) {
+
+            throw new IllegalStateException(
+                    "Failed to read published project snapshot",
+                    exception
+            );
+        }
+    }
+    
+    @Transactional(readOnly = true)
+    public ProjectResponse getProjectResponseFromRevision(
+            ContentRevision revision) {
+
+        try {
+
+            return objectMapper.readValue(
+                    revision.getSnapshot(),
+                    ProjectResponse.class
+            );
+
+        } catch (JacksonException exception) {
+
+            throw new IllegalStateException(
+                    "Failed to read project revision snapshot",
+                    exception
+            );
+        }
     }
 }
 

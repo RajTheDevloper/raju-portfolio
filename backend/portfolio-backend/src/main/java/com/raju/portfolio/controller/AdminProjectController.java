@@ -89,4 +89,31 @@ public class AdminProjectController {
         return ResponseEntity.noContent().build();
     }
     
+    @PostMapping("/{id}/publish")
+    public ResponseEntity<ProjectResponse> publishProject(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                projectService.publishProject(id)
+        );
+    }
+    
+    @PostMapping("/{id}/archive")
+    public ResponseEntity<ProjectResponse> archiveProject(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                projectService.archiveProject(id)
+        );
+    }
+    
+    @PostMapping("/{id}/unpublish")
+    public ResponseEntity<ProjectResponse> unpublishProject(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                projectService.unpublishProject(id)
+        );
+    }
+    
 }
