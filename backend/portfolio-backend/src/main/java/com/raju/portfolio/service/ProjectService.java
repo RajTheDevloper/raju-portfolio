@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
-import com.raju.portfolio.entity.Project;
 import com.raju.portfolio.entity.ContentStatus;
+import com.raju.portfolio.entity.Project;
 import com.raju.portfolio.entity.Technology;
 import com.raju.portfolio.exception.DuplicateProjectSlugException;
 import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
@@ -30,21 +30,25 @@ public class ProjectService {
 
     private final TechnologyRepository technologyRepository;
 
+    private final ContentRevisionService contentRevisionService;
+
     public ProjectService(
             ProjectRepository projectRepository,
             ProjectMapper projectMapper,
-            TechnologyRepository technologyRepository) {
+            TechnologyRepository technologyRepository,
+            ContentRevisionService contentRevisionService) {
 
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
         this.technologyRepository = technologyRepository;
+        this.contentRevisionService = contentRevisionService;
     }
 
     @Transactional(readOnly = true)
     public List<ProjectResponse> getAllProjects() {
 
-    	List<Project> projects =
-    	        projectRepository.findAllByOrderByDisplayOrderAsc();
+        List<Project> projects =
+                projectRepository.findAllByOrderByDisplayOrderAsc();
 
         return projects.stream()
                 .map(projectMapper::toResponse)
@@ -52,8 +56,7 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public ProjectResponse getProjectById(
-            Long id) {
+    public ProjectResponse getProjectById(Long id) {
 
         Project project =
                 projectRepository.findById(id)
@@ -65,8 +68,7 @@ public class ProjectService {
     }
 
     @Transactional(readOnly = true)
-    public ProjectResponse getProjectBySlug(
-            String slug) {
+    public ProjectResponse getProjectBySlug(String slug) {
 
         Project project =
                 projectRepository.findBySlug(slug)
@@ -78,8 +80,7 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectResponse saveProject(
-            ProjectRequest request) {
+    public ProjectResponse saveProject(ProjectRequest request) {
 
         if (projectRepository.existsBySlug(
                 request.getSlug())) {
@@ -103,9 +104,20 @@ public class ProjectService {
         Project savedProject =
                 projectRepository.save(project);
 
-        return projectMapper.toResponse(
-                savedProject
+        ProjectResponse response =
+                projectMapper.toResponse(
+                        savedProject
+                );
+
+        contentRevisionService.createRevision(
+                "PROJECT",
+                savedProject.getId(),
+                savedProject.getStatus().name(),
+                "system",
+                response
         );
+
+        return response;
     }
 
     @Transactional
@@ -144,9 +156,20 @@ public class ProjectService {
                         existingProject
                 );
 
-        return projectMapper.toResponse(
-                updatedProject
+        ProjectResponse response =
+                projectMapper.toResponse(
+                        updatedProject
+                );
+
+        contentRevisionService.createRevision(
+                "PROJECT",
+                updatedProject.getId(),
+                updatedProject.getStatus().name(),
+                "system",
+                response
         );
+
+        return response;
     }
 
     @Transactional
@@ -192,32 +215,37 @@ public class ProjectService {
 
         return new HashSet<>(technologies);
     }
-    
+
     @Transactional(readOnly = true)
     public List<ProjectResponse> getPublishedProjects() {
 
         List<Project> projects =
                 projectRepository
                         .findAllByStatusOrderByDisplayOrderAsc(
-								ContentStatus.PUBLISHED
+                                ContentStatus.PUBLISHED
                         );
 
         return projects.stream()
                 .map(projectMapper::toResponse)
                 .toList();
     }
-    
+
     @Transactional(readOnly = true)
-    public ProjectResponse getPublishedProjectBySlug(String slug) {
+    public ProjectResponse getPublishedProjectBySlug(
+            String slug) {
 
         Project project =
                 projectRepository.findBySlug(slug)
-                        .orElseThrow(() ->
-                                new ProjectNotFoundBySlugException(slug)
+                        .orElseThrow(
+                                () -> new ProjectNotFoundBySlugException(slug)
                         );
 
-        if (project.getStatus() != ContentStatus.PUBLISHED) {
-            throw new ProjectNotFoundBySlugException(slug);
+        if (project.getStatus()
+                != ContentStatus.PUBLISHED) {
+
+            throw new ProjectNotFoundBySlugException(
+                    slug
+            );
         }
 
         return projectMapper.toResponse(project);

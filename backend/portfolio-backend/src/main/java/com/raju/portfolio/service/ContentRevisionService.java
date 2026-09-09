@@ -9,17 +9,25 @@ import org.springframework.transaction.annotation.Transactional;
 import com.raju.portfolio.entity.ContentRevision;
 import com.raju.portfolio.repository.ContentRevisionRepository;
 
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
+
 @Service
 public class ContentRevisionService {
 
     private final ContentRevisionRepository
             contentRevisionRepository;
 
+    private final ObjectMapper objectMapper;
+
     public ContentRevisionService(
-            ContentRevisionRepository contentRevisionRepository) {
+            ContentRevisionRepository contentRevisionRepository,
+            ObjectMapper objectMapper) {
 
         this.contentRevisionRepository =
                 contentRevisionRepository;
+
+        this.objectMapper = objectMapper;
     }
 
     @Transactional
@@ -28,12 +36,30 @@ public class ContentRevisionService {
             Long contentId,
             String status,
             String createdBy,
-            String snapshot) {
+            Object content) {
 
-        int nextVersion = getNextVersionNumber(
-                contentType,
-                contentId
-        );
+        int nextVersion =
+                getNextVersionNumber(
+                        contentType,
+                        contentId
+                );
+
+        String snapshot;
+
+        try {
+
+            snapshot =
+                    objectMapper.writeValueAsString(
+                            content
+                    );
+
+        } catch (JacksonException exception) {
+
+            throw new IllegalStateException(
+                    "Failed to create content snapshot",
+                    exception
+            );
+        }
 
         ContentRevision revision =
                 new ContentRevision();
@@ -42,7 +68,9 @@ public class ContentRevisionService {
         revision.setContentId(contentId);
         revision.setVersionNumber(nextVersion);
         revision.setStatus(status);
-        revision.setCreatedAt(LocalDateTime.now());
+        revision.setCreatedAt(
+                LocalDateTime.now()
+        );
         revision.setCreatedBy(createdBy);
         revision.setSnapshot(snapshot);
 
@@ -78,3 +106,5 @@ public class ContentRevisionService {
                 .orElse(1);
     }
 }
+
+
