@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.raju.portfolio.dto.media.MediaFileResponse;
 import com.raju.portfolio.dto.media.MediaResponse;
 import com.raju.portfolio.service.MediaService;
 
@@ -68,24 +69,29 @@ public class AdminMediaController {
     public ResponseEntity<byte[]> download(
             @PathVariable Long id) {
 
-        MediaResponse media = mediaService.getById(id);
-
-        byte[] file = mediaService.loadFile(id);
+        MediaFileResponse mediaFile =
+                mediaService.getFile(id);
 
         return ResponseEntity.ok()
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
                         "inline; filename=\"" +
-                                media.getOriginalFileName() +
+                                mediaFile.getOriginalFileName() +
                                 "\""
                 )
                 .contentType(
                         MediaType.parseMediaType(
-                                media.getContentType()
+                                mediaFile.getContentType()
                         )
                 )
-                .body(file);
+                .contentLength(
+                        mediaFile.getFileSize()
+                )
+                .body(
+                        mediaFile.getContent()
+                );
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(

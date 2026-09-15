@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.raju.portfolio.dto.media.MediaFileResponse;
 import com.raju.portfolio.dto.media.MediaResponse;
 import com.raju.portfolio.entity.Media;
 import com.raju.portfolio.enums.MediaType;
@@ -126,27 +127,27 @@ public class MediaService {
                 .toList();
     }
 
-    public byte[] loadFile(Long id) {
-
-        Media media = mediaRepository.findById(id)
-                .orElseThrow(
-                        () -> new MediaNotFoundException(id)
-                );
-
-        try {
-
-            return storageService.load(
-                    media.getStoragePath()
-            );
-
-        } catch (IOException exception) {
-
-            throw new MediaStorageException(
-                    "Failed to load media file",
-                    exception
-            );
-        }
-    }
+//    public byte[] loadFile(Long id) {
+//
+//        Media media = mediaRepository.findById(id)
+//                .orElseThrow(
+//                        () -> new MediaNotFoundException(id)
+//                );
+//
+//        try {
+//
+//            return storageService.load(
+//                    media.getStoragePath()
+//            );
+//
+//        } catch (IOException exception) {
+//
+//            throw new MediaStorageException(
+//                    "Failed to load media file",
+//                    exception
+//            );
+//        }
+//    }
 
     public void delete(Long id) {
 
@@ -249,5 +250,36 @@ public class MediaService {
             }
         }
     }
+    
+    public MediaFileResponse getFile(Long id) {
+
+        Media media = mediaRepository.findById(id)
+                .orElseThrow(
+                        () -> new MediaNotFoundException(id)
+                );
+
+        try {
+
+            byte[] content =
+                    storageService.load(
+                            media.getStoragePath()
+                    );
+
+            return new MediaFileResponse(
+                    content,
+                    media.getContentType(),
+                    media.getOriginalFileName(),
+                    media.getFileSize()
+            );
+
+        } catch (IOException exception) {
+
+            throw new MediaStorageException(
+                    "Failed to load media file",
+                    exception
+            );
+        }
+    }
+
 
 }
