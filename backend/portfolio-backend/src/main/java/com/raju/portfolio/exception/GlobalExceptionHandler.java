@@ -256,6 +256,59 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(error);
     }
+    
+    @ExceptionHandler(MediaNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleMediaNotFound(
+            MediaNotFoundException exception,
+            HttpServletRequest request) {
+
+    	 ApiErrorResponse response =
+                 new ApiErrorResponse(
+                         HttpStatus.NOT_FOUND.value(),
+                         exception.getMessage(),
+                         null,
+                         LocalDateTime.now(),
+                         request.getRequestURI()
+                 );
+
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        response.setMessage(exception.getMessage());
+        response.setErrors(null);
+        response.setTimestamp(java.time.LocalDateTime.now());
+        response.setPath(request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+    
+    @ExceptionHandler(MediaStorageException.class)
+    public ResponseEntity<ApiErrorResponse> handleMediaStorageException(
+            MediaStorageException exception,
+            HttpServletRequest request) {
+
+    	 ApiErrorResponse response =
+                 new ApiErrorResponse(
+                         HttpStatus.NOT_FOUND.value(),
+                         exception.getMessage(),
+                         null,
+                         LocalDateTime.now(),
+                         request.getRequestURI()
+                 );
+
+        response.setStatus(
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+
+        response.setMessage(exception.getMessage());
+        response.setErrors(null);
+        response.setTimestamp(java.time.LocalDateTime.now());
+        response.setPath(request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
+    }
 
     private String getRequestPath(WebRequest request) {
 

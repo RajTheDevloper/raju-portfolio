@@ -29,7 +29,27 @@ public class ApiErrorResponse {
         return status;
     }
 
-    public String getMessage() {
+    public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public void setErrors(Map<String, String> errors) {
+		this.errors = errors;
+	}
+
+	public void setTimestamp(LocalDateTime timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getMessage() {
         return message;
     }
 
