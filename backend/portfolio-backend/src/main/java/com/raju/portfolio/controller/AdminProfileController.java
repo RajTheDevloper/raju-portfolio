@@ -11,8 +11,10 @@ import com.raju.portfolio.dto.ProfileRequest;
 import com.raju.portfolio.dto.ProfileResponse;
 import com.raju.portfolio.service.ProfileService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/admin/profile")
 public class AdminProfileController {

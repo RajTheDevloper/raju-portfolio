@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.raju.portfolio.dto.dashboard.AdminDashboardResponse;
 import com.raju.portfolio.service.AdminDashboardService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/admin/dashboard")
 public class AdminDashboardController {

@@ -41,18 +41,22 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers(
-                    "/api/public/**",
-                    "/api/auth/**",
-                    "/api/health"
-                ).permitAll()
+            	    .requestMatchers(
+            	        "/api/public/**",
+            	        "/api/auth/**",
+            	        "/api/health",
 
-                .requestMatchers(
-                    "/api/admin/**"
-                ).hasRole("ADMIN")
+            	        "/swagger-ui/**",
+            	        "/swagger-ui.html",
+            	        "/v3/api-docs/**"
+            	    ).permitAll()
 
-                .anyRequest().authenticated()
-            )
+            	    .requestMatchers(
+            	        "/api/admin/**"
+            	    ).hasRole("ADMIN")
+
+            	    .anyRequest().authenticated()
+            	)
 
             .addFilterBefore(
                 jwtAuthenticationFilter,
