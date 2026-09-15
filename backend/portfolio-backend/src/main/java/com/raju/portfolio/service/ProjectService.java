@@ -1,5 +1,6 @@
 package com.raju.portfolio.service;
 
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,13 +13,16 @@ import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.ContentRevision;
 import com.raju.portfolio.entity.ContentStatus;
+import com.raju.portfolio.entity.Media;
 import com.raju.portfolio.entity.Project;
 import com.raju.portfolio.entity.Technology;
 import com.raju.portfolio.exception.DuplicateProjectSlugException;
+import com.raju.portfolio.exception.MediaNotFoundException;
 import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
 import com.raju.portfolio.exception.ProjectNotFoundException;
 import com.raju.portfolio.exception.TechnologyNotFoundException;
 import com.raju.portfolio.mapper.ProjectMapper;
+import com.raju.portfolio.repository.MediaRepository;
 import com.raju.portfolio.repository.ProjectRepository;
 import com.raju.portfolio.repository.TechnologyRepository;
 
@@ -32,17 +36,21 @@ public class ProjectService {
     private final TechnologyRepository technologyRepository;
 
     private final ContentRevisionService contentRevisionService;
+    
+    private final MediaRepository mediaRepository;
 
     public ProjectService(
             ProjectRepository projectRepository,
             ProjectMapper projectMapper,
             TechnologyRepository technologyRepository,
-            ContentRevisionService contentRevisionService) {
+            ContentRevisionService contentRevisionService,
+            MediaRepository mediaRepository) {
 
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
         this.technologyRepository = technologyRepository;
         this.contentRevisionService = contentRevisionService;
+        this.mediaRepository = mediaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -117,6 +125,20 @@ public class ProjectService {
                 "system",
                 response
         );
+        
+        Media imageMedia = null;
+
+        if (request.getImageMediaId() != null) {
+            imageMedia = mediaRepository.findById(
+                    request.getImageMediaId()
+            ).orElseThrow(
+                    () -> new MediaNotFoundException(
+                            request.getImageMediaId()
+                    )
+            );
+        }
+        
+        project.setImageMedia(imageMedia);
 
         return response;
     }
@@ -176,6 +198,20 @@ public class ProjectService {
                 "system",
                 response
         );
+        
+        Media imageMedia = null;
+
+        if (request.getImageMediaId() != null) {
+            imageMedia = mediaRepository.findById(
+                    request.getImageMediaId()
+            ).orElseThrow(
+                    () -> new MediaNotFoundException(
+                            request.getImageMediaId()
+                    )
+            );
+        }
+        
+        updatedProject.setImageMedia(imageMedia);
 
         return response;
     }

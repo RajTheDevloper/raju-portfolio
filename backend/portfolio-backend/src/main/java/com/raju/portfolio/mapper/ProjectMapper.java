@@ -81,6 +81,18 @@ public class ProjectMapper {
         response.setStatus(
                 project.getStatus().name()
         );
+        
+        if (project.getImageMedia() != null) {
+            response.setImageMediaId(
+                    project.getImageMedia().getId()
+            );
+
+            response.setImageUrl(
+                    "/api/public/media/"
+                            + project.getImageMedia().getId()
+                            + "/file"
+            );
+        }
 
         return response;
     }

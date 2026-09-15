@@ -11,7 +11,16 @@ public class ProjectResponse {
     private List<TechnologyResponse> technologies;
     private String githubUrl;
     private String liveUrl;
-    private String imageUrl;
+    private Long imageMediaId;
+    public Long getImageMediaId() {
+		return imageMediaId;
+	}
+
+	public void setImageMediaId(Long imageMediaId) {
+		this.imageMediaId = imageMediaId;
+	}
+
+	private String imageUrl;
     private boolean featured;
     private Integer displayOrder;
     private String status;

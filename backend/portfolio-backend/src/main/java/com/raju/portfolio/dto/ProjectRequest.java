@@ -58,13 +58,25 @@ public class ProjectRequest {
             max = 500,
             message = "Image URL must not exceed 500 characters"
     )
-    private String imageUrl;
+    
+    @NotNull(message = "Image media ID is required")
+    private Long imageMediaId;
 
-    @NotNull(message = "Featured value is required")
+    public Long getImageMediaId() {
+		return imageMediaId;
+	}
+
+	public void setImageMediaId(Long imageMediaId) {
+		this.imageMediaId = imageMediaId;
+	}
+
+	@NotNull(message = "Featured value is required")
     private Boolean featured;
 
     @NotNull(message = "Display order is required")
     private Integer displayOrder;
+
+	private String imageUrl;
 
     public ProjectRequest() {
     }

@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -42,9 +43,20 @@ public class Project {
 
     private String liveUrl;
 
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "image_media_id") 
+    private Media imageMedia;
+    
     private String imageUrl;
 
-    private boolean featured;
+    public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	private boolean featured;
 
     private Integer displayOrder;
     
@@ -115,15 +127,15 @@ public class Project {
         this.liveUrl = liveUrl;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
+    public Media getImageMedia() {
+		return imageMedia;
+	}
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+	public void setImageMedia(Media imageMedia) {
+		this.imageMedia = imageMedia;
+	}
 
-    public boolean isFeatured() {
+	public boolean isFeatured() {
         return featured;
     }
 
