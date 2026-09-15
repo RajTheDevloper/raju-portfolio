@@ -2,6 +2,8 @@ package com.raju.portfolio.dto.media;
 
 import java.time.LocalDateTime;
 
+import com.raju.portfolio.enums.MediaType;
+
 public class MediaResponse {
 
     private Long id;
@@ -9,7 +11,7 @@ public class MediaResponse {
     private String contentType;
     private Long fileSize;
     private String storagePath;
-    private String mediaType;
+    private MediaType mediaType;
     private LocalDateTime uploadedAt;
     private String uploadedBy;
 
@@ -56,11 +58,11 @@ public class MediaResponse {
         this.storagePath = storagePath;
     }
 
-    public String getMediaType() {
+    public MediaType getMediaType() {
         return mediaType;
     }
 
-    public void setMediaType(String mediaType) {
+    public void setMediaType(MediaType mediaType) {
         this.mediaType = mediaType;
     }
 

@@ -31,7 +31,7 @@ public class AdminMediaController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<MediaResponse> upload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("mediaType") String mediaType,
+            @RequestParam("mediaType") com.raju.portfolio.enums.MediaType mediaType,
             Authentication authentication) {
 
         String uploadedBy = authentication.getName();
