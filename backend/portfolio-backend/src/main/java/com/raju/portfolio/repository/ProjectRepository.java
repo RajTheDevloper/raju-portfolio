@@ -28,4 +28,6 @@ public interface ProjectRepository
     
     List<Project>
     findAllByPublishedRevisionIsNotNullOrderByDisplayOrderAsc();
+    
+    long countByStatus(ContentStatus status);
 }

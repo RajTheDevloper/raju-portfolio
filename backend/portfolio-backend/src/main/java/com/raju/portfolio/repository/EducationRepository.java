@@ -19,4 +19,6 @@ public interface EducationRepository
     Optional<Education> findByIdAndStatus(
             Long id,
             ContentStatus status);
+    
+    long countByStatus(ContentStatus status);
 }

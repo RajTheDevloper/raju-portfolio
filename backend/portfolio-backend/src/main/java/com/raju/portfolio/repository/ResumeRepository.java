@@ -12,4 +12,5 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
     Optional<Resume> findTopByActiveTrueOrderByUploadedAtDesc();
 
     List<Resume> findAllByOrderByUploadedAtDesc();
+    
 }

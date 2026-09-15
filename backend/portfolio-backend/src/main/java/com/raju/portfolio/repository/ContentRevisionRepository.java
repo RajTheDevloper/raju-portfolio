@@ -27,4 +27,6 @@ public interface ContentRevisionRepository
             String contentType,
             Long contentId,
             String status);
+    
+    List<ContentRevision> findTop10ByOrderByCreatedAtDesc();
 }

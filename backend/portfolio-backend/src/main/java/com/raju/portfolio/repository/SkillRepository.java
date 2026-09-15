@@ -26,4 +26,6 @@ public interface SkillRepository
 
     List<Skill> findAllByStatusAndFeaturedTrueOrderByDisplayOrderAsc(
     		ContentStatus status);
+    
+    long countByStatus(ContentStatus status);
 }

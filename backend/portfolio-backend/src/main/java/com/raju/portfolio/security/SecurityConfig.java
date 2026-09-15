@@ -30,6 +30,9 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
+            .cors(cors -> {
+            })
+
             .sessionManagement(session ->
                 session.sessionCreationPolicy(
                     SessionCreationPolicy.STATELESS
@@ -40,17 +43,15 @@ public class SecurityConfig {
 
                 .requestMatchers(
                     "/api/public/**",
-                    "/api/auth/**"
+                    "/api/auth/**",
+                    "/api/health"
                 ).permitAll()
 
-                .requestMatchers("/api/health")
-                .permitAll()
+                .requestMatchers(
+                    "/api/admin/**"
+                ).hasRole("ADMIN")
 
-                .requestMatchers("/api/admin/**")
-                .hasRole("ADMIN")
-
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
             )
 
             .addFilterBefore(
@@ -60,7 +61,8 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+    
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
 

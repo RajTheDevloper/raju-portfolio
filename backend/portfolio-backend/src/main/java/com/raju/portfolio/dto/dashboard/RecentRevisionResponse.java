@@ -1,42 +1,18 @@
-package com.raju.portfolio.entity;
+package com.raju.portfolio.dto.dashboard;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+public class RecentRevisionResponse {
 
-@Entity
-public class ContentRevision {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, length = 50)
     private String contentType;
-
-    @Column(nullable = false)
     private Long contentId;
-
-    @Column(nullable = false)
     private Integer versionNumber;
-
-    @Column(nullable = false, length = 20)
     private String status;
-
-    @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    @Column(length = 100)
     private String createdBy;
 
-    @Column(columnDefinition = "TEXT")
-    private String snapshot;
-
-    public ContentRevision() {
+    public RecentRevisionResponse() {
     }
 
     public Long getId() {
@@ -93,13 +69,5 @@ public class ContentRevision {
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public String getSnapshot() {
-        return snapshot;
-    }
-
-    public void setSnapshot(String snapshot) {
-        this.snapshot = snapshot;
     }
 }

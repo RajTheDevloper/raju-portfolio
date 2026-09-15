@@ -19,4 +19,6 @@ public interface ExperienceRepository
     Optional<Experience> findByIdAndStatus(
             Long id,
             ContentStatus status);
+    
+    long countByStatus(ContentStatus status);
 }
