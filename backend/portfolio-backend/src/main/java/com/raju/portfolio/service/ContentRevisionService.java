@@ -159,6 +159,25 @@ public class ContentRevisionService {
             );
         }
     }
+    
+    public ProjectResponse getLatestProjectDraft(Long projectId) {
+
+        ContentRevision revision =
+                contentRevisionRepository
+                        .findTopByContentTypeAndContentIdAndStatusOrderByVersionNumberDesc(
+                                "PROJECT",
+                                projectId,
+                                "DRAFT"
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "No draft revision found for project: "
+                                                + projectId
+                                )
+                        );
+
+        return getProjectResponseFromRevision(revision);
+    }
 }
 
 

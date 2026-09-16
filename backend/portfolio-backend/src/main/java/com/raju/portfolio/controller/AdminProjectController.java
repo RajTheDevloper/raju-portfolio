@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
+import com.raju.portfolio.service.ContentRevisionService;
 import com.raju.portfolio.service.ProjectService;
 
 import jakarta.validation.Valid;
@@ -24,11 +25,15 @@ import jakarta.validation.Valid;
 public class AdminProjectController {
 
     private final ProjectService projectService;
+    
+    private final ContentRevisionService contentRevisionService;
 
     public AdminProjectController(
-            ProjectService projectService) {
+            ProjectService projectService,
+            ContentRevisionService contentRevisionService) {
 
         this.projectService = projectService;
+        this.contentRevisionService = contentRevisionService;
     }
 
     @GetMapping
@@ -112,6 +117,16 @@ public class AdminProjectController {
 
         return ResponseEntity.ok(
                 projectService.unpublishProject(id)
+        );
+    }
+    
+    @GetMapping("/{id}/preview")
+    public ResponseEntity<ProjectResponse> preview(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                contentRevisionService
+                        .getLatestProjectDraft(id)
         );
     }
     

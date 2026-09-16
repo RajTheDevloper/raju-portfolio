@@ -29,4 +29,11 @@ public interface ContentRevisionRepository
             String status);
     
     List<ContentRevision> findTop10ByOrderByCreatedAtDesc();
+    
+    Optional<ContentRevision>
+    findByContentTypeAndContentIdAndVersionNumber(
+            String contentType,
+            Long contentId,
+            Integer versionNumber
+    );
 }

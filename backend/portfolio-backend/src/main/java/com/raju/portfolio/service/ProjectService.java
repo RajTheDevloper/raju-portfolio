@@ -1,6 +1,7 @@
 package com.raju.portfolio.service;
 
 
+import com.raju.portfolio.repository.ContentRevisionRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +30,9 @@ import com.raju.portfolio.repository.TechnologyRepository;
 @Service
 public class ProjectService {
 
-    private final ProjectRepository projectRepository;
+    private final ContentRevisionRepository contentRevisionRepository;
+
+	private final ProjectRepository projectRepository;
 
     private final ProjectMapper projectMapper;
 
@@ -44,13 +47,16 @@ public class ProjectService {
             ProjectMapper projectMapper,
             TechnologyRepository technologyRepository,
             ContentRevisionService contentRevisionService,
-            MediaRepository mediaRepository) {
+            MediaRepository mediaRepository, 
+            ContentRevisionRepository contentRevisionRepository) 
+    {
 
         this.projectRepository = projectRepository;
         this.projectMapper = projectMapper;
         this.technologyRepository = technologyRepository;
         this.contentRevisionService = contentRevisionService;
         this.mediaRepository = mediaRepository;
+        this.contentRevisionRepository = contentRevisionRepository;
     }
 
     @Transactional(readOnly = true)
@@ -413,6 +419,47 @@ public class ProjectService {
 
         // 6. Return the project
         return response;
+    }
+    
+    @Transactional
+    public void publishSpecificRevision(
+            Long projectId,
+            Integer revisionVersion) {
+
+        ContentRevision revision =
+                contentRevisionRepository
+                        .findByContentTypeAndContentIdAndVersionNumber(
+                                "PROJECT",
+                                projectId,
+                                revisionVersion
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Project revision not found"
+                                )
+                        );
+
+        if (!"DRAFT".equalsIgnoreCase(
+                revision.getStatus())) {
+
+            throw new RuntimeException(
+                    "Only draft revisions can be published"
+            );
+        }
+
+        Project project =
+                projectRepository.findById(projectId)
+                        .orElseThrow(() ->
+                                new ProjectNotFoundException(projectId)
+                        );
+
+        revision.setStatus("PUBLISHED");
+
+        project.setStatus(ContentStatus.PUBLISHED);
+        project.setPublishedRevision(revision);
+
+        contentRevisionRepository.save(revision);
+        projectRepository.save(project);
     }
 
     
