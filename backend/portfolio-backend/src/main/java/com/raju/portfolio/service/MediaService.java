@@ -1,6 +1,7 @@
 package com.raju.portfolio.service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,29 +69,28 @@ public class MediaService {
         String storedFileName =
                 UUID.randomUUID() + extension;
 
+        String storagePath = null;
+
         try {
 
-            String storagePath =
-                    storageService.store(
-                            file,
-                            storedFileName
-                    );
+            storagePath = storageService.store(
+                    file,
+                    storedFileName
+            );
 
             Media media = new Media();
 
             media.setOriginalFileName(originalFileName);
             media.setStoredFileName(storedFileName);
-            media.setContentType(
-                    file.getContentType() != null
-                            ? file.getContentType()
-                            : "application/octet-stream"
-            );
+            media.setContentType(file.getContentType());
             media.setFileSize(file.getSize());
             media.setStoragePath(storagePath);
             media.setMediaType(mediaType);
-            media.setUploadedAt(
-                    java.time.LocalDateTime.now()
+            media.setPubliclyAccessible(
+                    mediaType == MediaType.PROFILE_IMAGE
+                            || mediaType == MediaType.PROJECT_IMAGE
             );
+            media.setUploadedAt(LocalDateTime.now());
             media.setUploadedBy(uploadedBy);
 
             Media savedMedia =
@@ -98,10 +98,18 @@ public class MediaService {
 
             return mediaMapper.toResponse(savedMedia);
 
-        } catch (IOException exception) {
+        } catch (Exception exception) {
+
+            if (storagePath != null) {
+                try {
+                    storageService.delete(storagePath);
+                } catch (IOException cleanupException) {
+                    // Log cleanup failure
+                }
+            }
 
             throw new MediaStorageException(
-                    "Failed to store file",
+                    "Failed to store media",
                     exception
             );
         }
@@ -274,6 +282,35 @@ public class MediaService {
 
         } catch (IOException exception) {
 
+            throw new MediaStorageException(
+                    "Failed to load media file",
+                    exception
+            );
+        }
+    }
+    
+    public MediaFileResponse getPublicFile(Long id) {
+
+        Media media = mediaRepository.findById(id)
+                .orElseThrow(() -> new MediaNotFoundException(id));
+
+        if (!media.isPubliclyAccessible()) {
+            throw new MediaNotFoundException(id);
+        }
+
+        try {
+            byte[] content = storageService.load(
+                    media.getStoragePath()
+            );
+
+            return new MediaFileResponse(
+                    content,
+                    media.getContentType(),
+                    media.getOriginalFileName(),
+                    media.getFileSize()
+            );
+
+        } catch (IOException exception) {
             throw new MediaStorageException(
                     "Failed to load media file",
                     exception

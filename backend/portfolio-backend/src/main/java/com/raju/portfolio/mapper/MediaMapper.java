@@ -15,10 +15,14 @@ public class MediaMapper {
         response.setOriginalFileName(media.getOriginalFileName());
         response.setContentType(media.getContentType());
         response.setFileSize(media.getFileSize());
-        response.setStoragePath(media.getStoragePath());
+//        response.setStoragePath(media.getStoragePath());
         response.setMediaType(media.getMediaType());
         response.setUploadedAt(media.getUploadedAt());
         response.setUploadedBy(media.getUploadedBy());
+        
+        response.setPubliclyAccessible(
+                media.isPubliclyAccessible()
+        );
 
         return response;
     }

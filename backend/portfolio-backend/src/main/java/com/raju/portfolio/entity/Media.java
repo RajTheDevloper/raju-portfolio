@@ -45,6 +45,9 @@ public class Media {
 
     @Column(length = 100)
     private String uploadedBy;
+    
+    @Column(nullable = false)
+    private boolean publiclyAccessible;
 
     public Media() {
     }
@@ -115,5 +118,13 @@ public class Media {
 
     public void setUploadedBy(String uploadedBy) {
         this.uploadedBy = uploadedBy;
+    }
+    
+    public boolean isPubliclyAccessible() {
+        return publiclyAccessible;
+    }
+
+    public void setPubliclyAccessible(boolean publiclyAccessible) {
+        this.publiclyAccessible = publiclyAccessible;
     }
 }

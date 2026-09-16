@@ -10,10 +10,11 @@ public class MediaResponse {
     private String originalFileName;
     private String contentType;
     private Long fileSize;
-    private String storagePath;
+//    private String storagePath;
     private MediaType mediaType;
     private LocalDateTime uploadedAt;
     private String uploadedBy;
+    private boolean publiclyAccessible;
 
     public MediaResponse() {
     }
@@ -50,13 +51,13 @@ public class MediaResponse {
         this.fileSize = fileSize;
     }
 
-    public String getStoragePath() {
-        return storagePath;
-    }
-
-    public void setStoragePath(String storagePath) {
-        this.storagePath = storagePath;
-    }
+//    public String getStoragePath() {
+//        return storagePath;
+//    }
+//
+//    public void setStoragePath(String storagePath) {
+//        this.storagePath = storagePath;
+//    }
 
     public MediaType getMediaType() {
         return mediaType;
@@ -80,5 +81,13 @@ public class MediaResponse {
 
     public void setUploadedBy(String uploadedBy) {
         this.uploadedBy = uploadedBy;
+    }
+    
+    public boolean isPubliclyAccessible() {
+        return publiclyAccessible;
+    }
+
+    public void setPubliclyAccessible(boolean publiclyAccessible) {
+        this.publiclyAccessible = publiclyAccessible;
     }
 }

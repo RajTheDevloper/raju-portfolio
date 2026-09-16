@@ -1,0 +1,2 @@
+ALTER TABLE media
+ADD COLUMN publicly_accessible BOOLEAN NOT NULL DEFAULT FALSE;

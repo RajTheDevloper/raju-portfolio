@@ -21,8 +21,8 @@ public class PublicMediaController {
     public ResponseEntity<byte[]> getFile(
             @PathVariable Long id) {
 
-        MediaFileResponse mediaFile =
-                mediaService.getFile(id);
+    	MediaFileResponse mediaFile =
+    	        mediaService.getPublicFile(id);
 
         return ResponseEntity.ok()
                 .header(
