@@ -1,15 +1,24 @@
 package com.raju.portfolio.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-//it will tell spring that this java class contains the REST API end points.
-public class HealthController {
-	
-	@GetMapping("/api/health")
-	public String health() {
-		return "Portfolio backend is running";
-	}
+import java.time.LocalDateTime;
+import java.util.Map;
 
+@RestController
+public class HealthController {
+
+    @GetMapping("/api/health")
+    public ResponseEntity<Map<String, Object>> health() {
+
+        Map<String, Object> response = Map.of(
+                "status", "UP",
+                "service", "portfolio-backend",
+                "timestamp", LocalDateTime.now()
+        );
+
+        return ResponseEntity.ok(response);
+    }
 }
