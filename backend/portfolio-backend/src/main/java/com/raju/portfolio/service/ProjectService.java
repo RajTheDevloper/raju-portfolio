@@ -1,7 +1,6 @@
 package com.raju.portfolio.service;
 
 
-import com.raju.portfolio.repository.ContentRevisionRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,12 +16,14 @@ import com.raju.portfolio.entity.ContentStatus;
 import com.raju.portfolio.entity.Media;
 import com.raju.portfolio.entity.Project;
 import com.raju.portfolio.entity.Technology;
+import com.raju.portfolio.enums.AuditAction;
 import com.raju.portfolio.exception.DuplicateProjectSlugException;
 import com.raju.portfolio.exception.MediaNotFoundException;
 import com.raju.portfolio.exception.ProjectNotFoundBySlugException;
 import com.raju.portfolio.exception.ProjectNotFoundException;
 import com.raju.portfolio.exception.TechnologyNotFoundException;
 import com.raju.portfolio.mapper.ProjectMapper;
+import com.raju.portfolio.repository.ContentRevisionRepository;
 import com.raju.portfolio.repository.MediaRepository;
 import com.raju.portfolio.repository.ProjectRepository;
 import com.raju.portfolio.repository.TechnologyRepository;
@@ -41,6 +42,8 @@ public class ProjectService {
     private final ContentRevisionService contentRevisionService;
     
     private final MediaRepository mediaRepository;
+    
+    private final AuditLogService auditLogService;
 
     public ProjectService(
             ProjectRepository projectRepository,
@@ -48,7 +51,8 @@ public class ProjectService {
             TechnologyRepository technologyRepository,
             ContentRevisionService contentRevisionService,
             MediaRepository mediaRepository, 
-            ContentRevisionRepository contentRevisionRepository) 
+            ContentRevisionRepository contentRevisionRepository,
+            AuditLogService auditLogService) 
     {
 
         this.projectRepository = projectRepository;
@@ -57,6 +61,7 @@ public class ProjectService {
         this.contentRevisionService = contentRevisionService;
         this.mediaRepository = mediaRepository;
         this.contentRevisionRepository = contentRevisionRepository;
+        this.auditLogService = auditLogService;
     }
 
     @Transactional(readOnly = true)
@@ -132,6 +137,14 @@ public class ProjectService {
                 response
         );
         
+        
+        auditLogService.log(
+                AuditAction.CREATE,
+                "PROJECT",
+                savedProject.getId(),
+                "Project created"
+        );
+        
         Media imageMedia = null;
 
         if (request.getImageMediaId() != null) {
@@ -178,6 +191,13 @@ public class ProjectService {
                 existingProject,
                 request,
                 technologies
+        );
+        
+        auditLogService.log(
+                AuditAction.UPDATE,
+                "PROJECT",
+                existingProject.getId(),
+                "Project updated"
         );
 
         /*
@@ -335,6 +355,13 @@ public class ProjectService {
                         "system",
                         response
                 );
+        
+        auditLogService.log(
+                AuditAction.PUBLISH,
+                "PROJECT",
+                id,
+                "Project published"
+        );
 
         // 6. Connect this published revision to the project
         publishedProject.setPublishedRevision(publishedRevision);
@@ -379,6 +406,13 @@ public class ProjectService {
                 "system",
                 response
         );
+        
+        auditLogService.log(
+                AuditAction.ARCHIVE,
+                "PROJECT",
+                id,
+                "Project archived"
+        );
 
         // 7. Return the archived project
         return response;
@@ -415,6 +449,13 @@ public class ProjectService {
                 ContentStatus.DRAFT.name(),
                 "system",
                 response
+        );
+        
+        auditLogService.log(
+                AuditAction.UNPUBLISH,
+                "PROJECT",
+                id,
+                "Project unpublished"
         );
 
         // 6. Return the project
