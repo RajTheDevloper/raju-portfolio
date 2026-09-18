@@ -8,7 +8,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
+import com.raju.portfolio.dto.common.PageResponse;
+import com.raju.portfolio.dto.common.PageResponseMapper;
 import com.raju.portfolio.dto.ProjectRequest;
 import com.raju.portfolio.dto.ProjectResponse;
 import com.raju.portfolio.entity.ContentRevision;
@@ -27,6 +31,7 @@ import com.raju.portfolio.repository.ContentRevisionRepository;
 import com.raju.portfolio.repository.MediaRepository;
 import com.raju.portfolio.repository.ProjectRepository;
 import com.raju.portfolio.repository.TechnologyRepository;
+
 
 @Service
 public class ProjectService {
@@ -62,6 +67,57 @@ public class ProjectService {
         this.mediaRepository = mediaRepository;
         this.contentRevisionRepository = contentRevisionRepository;
         this.auditLogService = auditLogService;
+    }
+    
+    @Transactional(readOnly = true)
+    public PageResponse<ProjectResponse> searchProjects(
+            String search,
+            ContentStatus status,
+            Pageable pageable) {
+
+        boolean hasSearch =
+                search != null && !search.isBlank();
+
+        Page<Project> projects;
+
+        if (hasSearch && status != null) {
+
+            projects =
+                    projectRepository
+                            .findByNameContainingIgnoreCaseAndStatus(
+                                    search,
+                                    status,
+                                    pageable
+                            );
+
+        } else if (hasSearch) {
+
+            projects =
+                    projectRepository
+                            .findByNameContainingIgnoreCase(
+                                    search,
+                                    pageable
+                            );
+
+        } else if (status != null) {
+
+            projects =
+                    projectRepository
+                            .findByStatus(
+                                    status,
+                                    pageable
+                            );
+
+        } else {
+
+            projects =
+                    projectRepository.findAll(pageable);
+        }
+
+        return PageResponseMapper.map(
+                projects,
+                projectMapper::toResponse
+        );
     }
 
     @Transactional(readOnly = true)

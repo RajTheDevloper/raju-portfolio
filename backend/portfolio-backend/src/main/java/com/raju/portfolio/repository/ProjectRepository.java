@@ -34,6 +34,12 @@ public interface ProjectRepository
             Pageable pageable
     );
     
+    Page<Project> findByNameContainingIgnoreCaseAndStatus(
+            String name,
+            ContentStatus status,
+            Pageable pageable
+    );
+    
     Page<Project> findByNameContainingIgnoreCase(
             String name,
             Pageable pageable
