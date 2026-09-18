@@ -53,11 +53,6 @@ public class ProjectRequest {
             message = "Live URL must be a valid HTTP or HTTPS URL"
     )
     private String liveUrl;
-
-    @Size(
-            max = 500,
-            message = "Image URL must not exceed 500 characters"
-    )
     
     @NotNull(message = "Image media ID is required")
     private Long imageMediaId;
