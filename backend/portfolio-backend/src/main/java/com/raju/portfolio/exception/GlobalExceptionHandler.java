@@ -3,6 +3,7 @@ package com.raju.portfolio.exception;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -304,6 +306,45 @@ public class GlobalExceptionHandler {
         response.setErrors(null);
         response.setTimestamp(java.time.LocalDateTime.now());
         response.setPath(request.getRequestURI());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
+    }
+    
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleGeneralException(
+            Exception exception,
+            HttpServletRequest request) {
+
+        ApiErrorResponse response =
+                new ApiErrorResponse(
+                		HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        exception.getMessage(),
+                        null,
+                        LocalDateTime.now(),
+                        request.getRequestURI()
+                        );
+
+        response.setStatus(
+                HttpStatus.INTERNAL_SERVER_ERROR.value()
+        );
+
+        response.setMessage(
+                "An unexpected error occurred"
+        );
+
+        response.setErrors(
+                (Map<String, String>) List.of(exception.getMessage())
+        );
+
+        response.setTimestamp(
+                LocalDateTime.now()
+        );
+
+        response.setPath(
+                request.getRequestURI()
+        );
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
