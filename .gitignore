@@ -34,3 +34,7 @@ logs/
 # IDE metadata and sonarlint files
 .metadata/
 .sonarlint/
+
+
+#docker file
+docker-compose.yml
