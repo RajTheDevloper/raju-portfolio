@@ -1,9 +1,9 @@
 package com.raju.portfolio.exception;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -317,14 +317,16 @@ public class GlobalExceptionHandler {
             Exception exception,
             HttpServletRequest request) {
 
+        exception.printStackTrace();
+
         ApiErrorResponse response =
                 new ApiErrorResponse(
-                		HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        exception.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "An unexpected error occurred",
                         null,
                         LocalDateTime.now(),
                         request.getRequestURI()
-                        );
+                );
 
         response.setStatus(
                 HttpStatus.INTERNAL_SERVER_ERROR.value()
@@ -334,9 +336,18 @@ public class GlobalExceptionHandler {
                 "An unexpected error occurred"
         );
 
-        response.setErrors(
-                (Map<String, String>) List.of(exception.getMessage())
-        );
+        Map<String, String> errors = new HashMap<>();
+
+        if (exception.getMessage() != null
+                && !exception.getMessage().isBlank()) {
+
+            errors.put(
+                    "error",
+                    exception.getMessage()
+            );
+        }
+
+        response.setErrors(errors);
 
         response.setTimestamp(
                 LocalDateTime.now()
@@ -350,7 +361,6 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(response);
     }
-
     private String getRequestPath(WebRequest request) {
 
         return request
