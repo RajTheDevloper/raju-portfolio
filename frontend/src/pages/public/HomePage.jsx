@@ -12,15 +12,27 @@ import { getPublicProfile } from "../../services/profileService";
 
 import Projects from "../../components/portfolio/Projects";
 
-import {
-    getPublicProjects
-} from "../../services/projectService";
+import Experience from "../../components/portfolio/Experience";
+import { getPublicExperience } from "../../services/experienceService";
+
+import Education from "../../components/portfolio/Education";
+import { getPublicEducation } from "../../services/educationService";
+
+import Resume from "../../components/portfolio/Resume";
+import { getPublicResume } from "../../services/resumeService";
+
+import Contact from "../../components/portfolio/Contact";
+
+import { getPublicProjects } from "../../services/projectService";
 
 function HomePage() {
 
     const [profile, setProfile] = useState(null);
     const [skills, setSkills] = useState([]);
     const [projects, setProjects] = useState([]);
+    const [experience, setExperience] = useState([]);
+    const [education, setEducation] = useState([]);
+    const [resume, setResume] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -33,11 +45,17 @@ function HomePage() {
                 const [
                     profileData,
                     skillsData,
-                    projectsData
+                    projectsData,
+                    experienceData,
+                    educationData,
+                    resumeData
                 ] = await Promise.all([
                     getPublicProfile(),
                     getPublicSkills(),
-                    getPublicProjects()
+                    getPublicProjects(),
+                    getPublicExperience(),
+                    getPublicEducation(),
+                    getPublicResume()
                 ]);
             
             setProfile(profileData);
@@ -53,7 +71,23 @@ function HomePage() {
                     ? projectsData
                     : projectsData?.content || []
             );
-            
+
+            setExperience(
+                Array.isArray(experienceData)
+                    ? experienceData
+                    : experienceData?.content || []
+            );
+            setEducation(
+                Array.isArray(educationData)
+                    ? educationData
+                    : educationData?.content || []
+            );
+            // setResume(
+            //     Array.isArray(resumeData)
+            //         ? resumeData
+            //         : resumeData?.content || []
+            // );
+            setResume(resumeData);
 
             } catch (error) {
 
@@ -111,44 +145,13 @@ function HomePage() {
 
            <Projects projects={projects} />
 
+           <Experience experience={experience} />
 
-            <section
-                id="experience"
-                className="portfolio-section"
-            >
-                <div className="container">
-                    <h2>Experience</h2>
-                    <p>
-                        Experience section coming next.
-                    </p>
-                </div>
-            </section>
+           <Education education={education} />
 
+           <Resume resume={resume} />
 
-            <section
-                id="education"
-                className="portfolio-section"
-            >
-                <div className="container">
-                    <h2>Education</h2>
-                    <p>
-                        Education section coming next.
-                    </p>
-                </div>
-            </section>
-
-
-            <section
-                id="contact"
-                className="portfolio-section"
-            >
-                <div className="container">
-                    <h2>Contact</h2>
-                    <p>
-                        Contact section coming next.
-                    </p>
-                </div>
-            </section>
+           <Contact profile={profile} />
 
         </PortfolioLayout>
     );
