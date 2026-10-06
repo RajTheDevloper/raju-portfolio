@@ -6,5 +6,13 @@ export const getPublicProjects = async () => {
     return response.data;
 };
 
+export const getPublicProjectBySlug = async (slug) => {
+    const response = await api.get(
+        `/public/projects/${slug}`
+    );
+
+    return response.data;
+};
+
 // This calls your existing backend endpoint:
 // GET http://localhost:8081/api/public/projects

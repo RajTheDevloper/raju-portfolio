@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/public/HomePage";
+import ProjectDetailPage from "../pages/public/ProjectDetailPage";
 
 function AdminLoginPage() {
   return <h1>Admin Login</h1>;
@@ -8,6 +9,11 @@ function AdminLoginPage() {
 function AdminDashboardPage() {
   return <h1>Admin Dashboard</h1>;
 }
+
+<Route
+    path="/projects/:slug"
+    element={<ProjectDetailPage />}
+/>
 
 function NotFoundPage() {
   return <h1>404 - Page Not Found</h1>;

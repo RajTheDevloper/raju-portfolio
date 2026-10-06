@@ -1086,3 +1086,291 @@ select {
         font-size: 22px;
     }
 }
+
+/* =================================
+   Project Detail Page
+================================= */
+
+.project-detail-page {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #18181b 0,
+            #0a0a0a 45%
+        );
+}
+
+
+/* =================================
+   Detail Header
+================================= */
+
+.project-detail-header {
+    padding: 28px 0;
+
+    border-bottom: 1px solid var(--color-border);
+}
+
+.back-link {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--color-secondary);
+
+    font-size: 14px;
+
+    transition:
+        color var(--transition-fast);
+}
+
+.back-link:hover {
+    color: white;
+}
+
+
+/* =================================
+   Detail Hero
+================================= */
+
+.project-detail-hero {
+    padding: 110px 0 80px;
+}
+
+.project-detail-hero h1 {
+    max-width: 1000px;
+
+    margin-top: 14px;
+
+    font-size: clamp(48px, 8vw, 100px);
+
+    line-height: 0.98;
+
+    letter-spacing: -5px;
+}
+
+.project-detail-description {
+    max-width: 750px;
+
+    margin-top: 30px;
+
+    color: var(--color-secondary);
+
+    font-size: 19px;
+
+    line-height: 1.8;
+}
+
+.project-detail-actions {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin-top: 36px;
+}
+
+.project-detail-actions .button {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+}
+
+
+/* =================================
+   Detail Image
+================================= */
+
+.project-detail-image-section {
+    padding-bottom: 100px;
+}
+
+.project-detail-image {
+    width: 100%;
+
+    max-height: 650px;
+
+    object-fit: cover;
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+}
+
+.project-detail-image-placeholder {
+    width: 100%;
+
+    height: 500px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111111,
+            #18181b
+        );
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius-lg);
+}
+
+.project-detail-image-placeholder span {
+    font-size: 150px;
+
+    font-weight: 800;
+
+    color: #27272a;
+}
+
+
+/* =================================
+   Detail Content
+================================= */
+
+.project-detail-content {
+    padding: 100px 0;
+
+    border-top: 1px solid var(--color-border);
+}
+
+.project-detail-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.5fr)
+        minmax(250px, 0.7fr);
+
+    gap: 100px;
+}
+
+.project-detail-grid h2 {
+    margin-bottom: 24px;
+
+    font-size: clamp(32px, 5vw, 54px);
+
+    letter-spacing: -2px;
+}
+
+.project-detail-grid main > p:last-child {
+    color: var(--color-secondary);
+
+    font-size: 17px;
+
+    line-height: 1.9;
+}
+
+.project-detail-technologies {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+
+/* =================================
+   Bottom Navigation
+================================= */
+
+.project-detail-bottom {
+    padding: 50px 0 100px;
+
+    border-top: 1px solid var(--color-border);
+}
+
+
+/* =================================
+   Not Found
+================================= */
+
+.project-not-found {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 80px 0;
+
+    background: var(--color-background);
+}
+
+.project-not-found h1 {
+    font-size: clamp(40px, 7vw, 80px);
+
+    letter-spacing: -3px;
+}
+
+.project-not-found p {
+    max-width: 500px;
+
+    margin: 20px 0 30px;
+
+    color: var(--color-secondary);
+}
+
+
+/* =================================
+   Detail Responsive
+================================= */
+
+@media (max-width: 800px) {
+
+    .project-detail-hero {
+        padding: 80px 0 60px;
+    }
+
+    .project-detail-hero h1 {
+        letter-spacing: -3px;
+    }
+
+    .project-detail-grid {
+        grid-template-columns: 1fr;
+
+        gap: 60px;
+    }
+
+    .project-detail-image-placeholder {
+        height: 350px;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .project-detail-hero h1 {
+        font-size: 48px;
+    }
+
+    .project-detail-description {
+        font-size: 16px;
+    }
+
+    .project-detail-actions {
+        flex-direction: column;
+    }
+
+    .project-detail-actions .button {
+        width: 100%;
+    }
+
+    .project-detail-image-placeholder {
+        height: 250px;
+    }
+
+    .project-detail-image-placeholder span {
+        font-size: 100px;
+    }
+}
