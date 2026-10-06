@@ -10,11 +10,17 @@ import { getPublicSkills } from "../../services/skillService";
 
 import { getPublicProfile } from "../../services/profileService";
 
+import Projects from "../../components/portfolio/Projects";
+
+import {
+    getPublicProjects
+} from "../../services/projectService";
+
 function HomePage() {
 
     const [profile, setProfile] = useState(null);
     const [skills, setSkills] = useState([]);
-    
+    const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -24,10 +30,14 @@ function HomePage() {
 
             try {
 
-                const [profileData, skillsData] =
-                await Promise.all([
+                const [
+                    profileData,
+                    skillsData,
+                    projectsData
+                ] = await Promise.all([
                     getPublicProfile(),
-                    getPublicSkills()
+                    getPublicSkills(),
+                    getPublicProjects()
                 ]);
             
             setProfile(profileData);
@@ -36,6 +46,12 @@ function HomePage() {
                 Array.isArray(skillsData)
                     ? skillsData
                     : skillsData?.content || []
+            );
+            
+            setProjects(
+                Array.isArray(projectsData)
+                    ? projectsData
+                    : projectsData?.content || []
             );
             
 
@@ -93,18 +109,7 @@ function HomePage() {
 
            <Skills skills={skills} />
 
-
-            <section
-                id="projects"
-                className="portfolio-section"
-            >
-                <div className="container">
-                    <h2>Projects</h2>
-                    <p>
-                        Projects section coming next.
-                    </p>
-                </div>
-            </section>
+           <Projects projects={projects} />
 
 
             <section
