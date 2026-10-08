@@ -1,4 +1,10 @@
-import { Routes, Route } from "react-router-dom";
+import {
+    // BrowserRouter,
+    Routes,
+    Route
+} from "react-router-dom";
+
+import PortfolioLayout from "../components/layout/PortfolioLayout";
 
 import HomePage from "../pages/public/HomePage";
 import ProjectDetailPage from "../pages/public/ProjectDetailPage";
@@ -6,64 +12,68 @@ import ProjectDetailPage from "../pages/public/ProjectDetailPage";
 import AdminLoginPage from "../pages/admin/AdminLoginPage";
 import AdminDashboardPage from "../pages/admin/AdminDashboardPage";
 
+import AdminLayout from "../components/admin/AdminLayout";
+import ProtectedRoute from "./ProtectedRoute";
 
-function NotFoundPage() {
-
+const AppRoutes = () => {
     return (
-        <main>
-            <h1>404 - Page Not Found</h1>
-        </main>
+        // <BrowserRouter>
+
+            <Routes>
+
+                {/* =========================
+                    PUBLIC ROUTES
+                   ========================= */}
+
+                <Route element={<PortfolioLayout />}>
+
+                    <Route
+                        path="/"
+                        element={<HomePage />}
+                    />
+
+                    <Route
+                        path="/projects/:slug"
+                        element={<ProjectDetailPage />}
+                    />
+
+                </Route>
+
+
+                {/* =========================
+                    ADMIN LOGIN
+                   ========================= */}
+
+                <Route
+                    path="/admin/login"
+                    element={<AdminLoginPage />}
+                />
+
+
+                {/* =========================
+                    PROTECTED ADMIN ROUTES
+                   ========================= */}
+
+                <Route element={<ProtectedRoute />}>
+
+                    <Route
+                        path="/admin"
+                        element={<AdminLayout />}
+                    >
+
+                        <Route
+                            index
+                            element={<AdminDashboardPage />}
+                        />
+
+                    </Route>
+
+                </Route>
+
+            </Routes>
+
+        // </BrowserRouter>
     );
-}
-
-
-function AppRoutes() {
-
-    return (
-        <Routes>
-
-            {/* =========================
-                PUBLIC ROUTES
-            ========================== */}
-
-            <Route
-                path="/"
-                element={<HomePage />}
-            />
-
-            <Route
-                path="/projects/:slug"
-                element={<ProjectDetailPage />}
-            />
-
-
-            {/* =========================
-                ADMIN ROUTES
-            ========================== */}
-
-            <Route
-                path="/admin/login"
-                element={<AdminLoginPage />}
-            />
-
-            <Route
-                path="/admin"
-                element={<AdminDashboardPage />}
-            />
-
-
-            {/* =========================
-                404
-            ========================== */}
-
-            <Route
-                path="*"
-                element={<NotFoundPage />}
-            />
-
-        </Routes>
-    );
-}
-
+};
 
 export default AppRoutes;

@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from "react";
 
-import PortfolioLayout from "../../components/layout/PortfolioLayout";
 import Hero from "../../components/portfolio/Hero";
 import About from "../../components/portfolio/About";
 
@@ -135,7 +134,7 @@ function HomePage() {
 
 
     return (
-        <PortfolioLayout>
+        <>
 
             <Hero profile={profile} />
 
@@ -152,8 +151,7 @@ function HomePage() {
            <Resume resume={resume} />
 
            <Contact profile={profile} />
-
-        </PortfolioLayout>
+           </>
     );
 }
 

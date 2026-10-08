@@ -1,21 +1,22 @@
-import Navbar from "./Navbar"; 
-import Footer from "./Footer"; 
-const PortfolioLayout = ({ children, profile }) => {
+import { Outlet } from "react-router-dom";
+
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+
+const PortfolioLayout = () => {
     return (
-        <>
-            <Navbar profile={profile} />
+        <div className="portfolio-layout">
+
+            <Navbar />
 
             <main>
-                {children}
+                <Outlet />
             </main>
 
-            <Footer profile={profile} />
-        </>
+            <Footer />
+
+        </div>
     );
 };
 
 export default PortfolioLayout;
-
-    /**
-     * This component gives us a consistent structure: ```text Navbar ↓ Page content ↓ Footer
-     */
