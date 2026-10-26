@@ -56,6 +56,11 @@ const AdminLayout = () => {
             icon: Code2
         },
         {
+            label: "Technologies",
+            path: "/admin/technologies",
+            icon: Code2
+        },
+        {
             label: "Resume",
             path: "/admin/resume",
             icon: FileText

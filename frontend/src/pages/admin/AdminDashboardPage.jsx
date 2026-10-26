@@ -11,12 +11,13 @@ import {
 } from "lucide-react";
 
 import { getAdminDashboard } from "../../services/admin/dashboardService";
+import { getPublicTechnologies } from "../../services/technologyService";
 
 const AdminDashboardPage = () => {
     const [dashboard, setDashboard] = useState(null);
+    const [totalTechnologies, setTotalTechnologies] = useState(0);
 
     const [loading, setLoading] = useState(true);
-
     const [error, setError] = useState("");
 
     const loadDashboard = async () => {
@@ -24,14 +25,21 @@ const AdminDashboardPage = () => {
             setLoading(true);
             setError("");
 
-            const data = await getAdminDashboard();
+            // Load the existing dashboard data and technologies together.
+            const [dashboardData, technologiesData] = await Promise.all([
+                getAdminDashboard(),
+                getPublicTechnologies()
+            ]);
 
-            setDashboard(data);
-        } catch (err) {
-            console.error(
-                "Failed to load admin dashboard:",
-                err
+            setDashboard(dashboardData);
+
+            setTotalTechnologies(
+                Array.isArray(technologiesData)
+                    ? technologiesData.length
+                    : 0
             );
+        } catch (err) {
+            console.error("Failed to load admin dashboard:", err);
 
             setError(
                 err?.response?.data?.message ||
@@ -68,6 +76,11 @@ const AdminDashboardPage = () => {
             icon: Code2
         },
         {
+            label: "Technologies",
+            value: totalTechnologies,
+            icon: Code2
+        },
+        {
             label: "Messages",
             value: dashboard?.totalMessages ?? 0,
             icon: MessageSquare
@@ -84,9 +97,7 @@ const AdminDashboardPage = () => {
             <div className="admin-page-state">
                 <div className="admin-loading-spinner" />
 
-                <p>
-                    Loading dashboard...
-                </p>
+                <p>Loading dashboard...</p>
             </div>
         );
     }
@@ -94,14 +105,9 @@ const AdminDashboardPage = () => {
     if (error) {
         return (
             <div className="admin-page-state admin-error-state">
+                <h2>Unable to load dashboard</h2>
 
-                <h2>
-                    Unable to load dashboard
-                </h2>
-
-                <p>
-                    {error}
-                </p>
+                <p>{error}</p>
 
                 <button
                     type="button"
@@ -111,24 +117,16 @@ const AdminDashboardPage = () => {
                     <RefreshCw size={17} />
                     Try Again
                 </button>
-
             </div>
         );
     }
 
     return (
         <div className="admin-dashboard">
-
-            {/* =========================
-                PAGE HEADER
-               ========================= */}
-
+            {/* PAGE HEADER */}
             <div className="admin-page-heading">
-
                 <div>
-                    <h2>
-                        Dashboard
-                    </h2>
+                    <h2>Dashboard</h2>
 
                     <p>
                         Welcome back. Manage your portfolio
@@ -145,16 +143,10 @@ const AdminDashboardPage = () => {
                     <RefreshCw size={17} />
                     Refresh
                 </button>
-
             </div>
 
-
-            {/* =========================
-                MAIN STATISTICS
-               ========================= */}
-
+            {/* MAIN STATISTICS */}
             <div className="admin-stats-grid">
-
                 {stats.map((stat) => {
                     const Icon = stat.icon;
 
@@ -163,58 +155,35 @@ const AdminDashboardPage = () => {
                             className="admin-stat-card"
                             key={stat.label}
                         >
-
                             <div className="admin-stat-icon">
                                 <Icon size={22} />
                             </div>
 
                             <div>
-
-                                <span>
-                                    {stat.label}
-                                </span>
-
-                                <strong>
-                                    {stat.value}
-                                </strong>
-
+                                <span>{stat.label}</span>
+                                <strong>{stat.value}</strong>
                             </div>
-
                         </div>
                     );
                 })}
-
             </div>
 
-
-            {/* =========================
-                PROJECT STATUS
-               ========================= */}
-
+            {/* PROJECT AND MESSAGE STATUS */}
             <div className="admin-dashboard-grid">
-
                 <div className="admin-dashboard-card">
-
                     <div className="admin-card-header">
-
                         <div>
-                            <h3>
-                                Project Status
-                            </h3>
+                            <h3>Project Status</h3>
 
                             <p>
                                 Current project publishing status
                             </p>
                         </div>
-
                     </div>
 
                     <div className="admin-status-list">
-
                         <div className="admin-status-item">
-                            <span>
-                                Published
-                            </span>
+                            <span>Published</span>
 
                             <strong>
                                 {dashboard?.publishedProjects ?? 0}
@@ -222,9 +191,7 @@ const AdminDashboardPage = () => {
                         </div>
 
                         <div className="admin-status-item">
-                            <span>
-                                Draft
-                            </span>
+                            <span>Draft</span>
 
                             <strong>
                                 {dashboard?.draftProjects ?? 0}
@@ -232,46 +199,27 @@ const AdminDashboardPage = () => {
                         </div>
 
                         <div className="admin-status-item">
-                            <span>
-                                Archived
-                            </span>
+                            <span>Archived</span>
 
                             <strong>
                                 {dashboard?.archivedProjects ?? 0}
                             </strong>
                         </div>
-
                     </div>
-
                 </div>
 
-
-                {/* =========================
-                    MESSAGE STATUS
-                   ========================= */}
-
                 <div className="admin-dashboard-card">
-
                     <div className="admin-card-header">
-
                         <div>
-                            <h3>
-                                Messages
-                            </h3>
+                            <h3>Messages</h3>
 
-                            <p>
-                                Contact message overview
-                            </p>
+                            <p>Contact message overview</p>
                         </div>
-
                     </div>
 
                     <div className="admin-status-list">
-
                         <div className="admin-status-item">
-                            <span>
-                                Total
-                            </span>
+                            <span>Total</span>
 
                             <strong>
                                 {dashboard?.totalMessages ?? 0}
@@ -279,9 +227,7 @@ const AdminDashboardPage = () => {
                         </div>
 
                         <div className="admin-status-item">
-                            <span>
-                                Unread
-                            </span>
+                            <span>Unread</span>
 
                             <strong>
                                 {dashboard?.unreadMessages ?? 0}
@@ -289,9 +235,7 @@ const AdminDashboardPage = () => {
                         </div>
 
                         <div className="admin-status-item">
-                            <span>
-                                Read
-                            </span>
+                            <span>Read</span>
 
                             <strong>
                                 {dashboard?.readMessages ?? 0}
@@ -299,46 +243,30 @@ const AdminDashboardPage = () => {
                         </div>
 
                         <div className="admin-status-item">
-                            <span>
-                                Archived
-                            </span>
+                            <span>Archived</span>
 
                             <strong>
                                 {dashboard?.archivedMessages ?? 0}
                             </strong>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
 
-
-            {/* =========================
-                RECENT REVISIONS
-               ========================= */}
-
+            {/* RECENT REVISIONS */}
             <div className="admin-dashboard-card admin-revisions-card">
-
                 <div className="admin-card-header">
-
                     <div>
-                        <h3>
-                            Recent Revisions
-                        </h3>
+                        <h3>Recent Revisions</h3>
 
                         <p>
                             Recently created content versions
                         </p>
                     </div>
-
                 </div>
 
                 {dashboard?.recentRevisions?.length > 0 ? (
-
                     <div className="admin-revisions-list">
-
                         {dashboard.recentRevisions.map(
                             (revision, index) => (
                                 <div
@@ -348,43 +276,30 @@ const AdminDashboardPage = () => {
                                         `${revision.contentType}-${index}`
                                     }
                                 >
-
                                     <div>
                                         <strong>
-                                            {revision.contentType ||
-                                                "Content"}
+                                            {revision.contentType || "Content"}
                                         </strong>
 
                                         <span>
                                             Version{" "}
-                                            {revision.versionNumber ??
-                                                "—"}
+                                            {revision.versionNumber ?? "—"}
                                         </span>
                                     </div>
 
                                     <span className="admin-revision-status">
-                                        {revision.status ||
-                                            "UNKNOWN"}
+                                        {revision.status || "UNKNOWN"}
                                     </span>
-
                                 </div>
                             )
                         )}
-
                     </div>
-
                 ) : (
-
                     <div className="admin-empty-state">
-                        <p>
-                            No recent revisions found.
-                        </p>
+                        <p>No recent revisions found.</p>
                     </div>
-
                 )}
-
             </div>
-
         </div>
     );
 };

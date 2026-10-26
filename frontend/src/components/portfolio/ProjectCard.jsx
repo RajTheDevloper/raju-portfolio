@@ -12,24 +12,26 @@ function ProjectCard({ project }) {
     return (
         <article className="project-card">
 
+
             {/* Project Image */}
             <div className="project-image-wrapper">
-
-                {project?.imageUrl ? (
+                {project?.imageMediaId ? (
                     <img
-                        src={project.imageUrl}
+                        src={`${ import.meta.env.VITE_API_BASE_URL }/public/media/${ project.imageMediaId }/file`}
                         alt={project.name}
                         className="project-image"
+                        loading="lazy"
+                        onError={(event) => {
+                            event.currentTarget.style.display = "none";
+                        }}
                     />
                 ) : (
                     <div className="project-image-placeholder">
-                        <span>
-                            {project?.name?.charAt(0)}
-                        </span>
+                        <span>{project?.name?.charAt(0)}</span>
                     </div>
                 )}
-
             </div>
+
 
 
             {/* Project Content */}
@@ -53,9 +55,9 @@ function ProjectCard({ project }) {
 
                     {project?.slug && (
                         <a
-                            href={`/projects/${project.slug}`}
+                            href={`/projects/${ project.slug }`}
                             className="project-arrow"
-                            aria-label={`View ${project.name}`}
+                            aria-label={`View ${ project.name }`}
                         >
                             <ArrowUpRight size={20} />
                         </a>

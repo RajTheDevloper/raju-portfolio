@@ -24,6 +24,9 @@ import Contact from "../../components/portfolio/Contact";
 
 import { getPublicProjects } from "../../services/projectService";
 
+import Technologies from "../../components/portfolio/Technologies";
+import { getPublicTechnologies } from "../../services/technologyService";
+
 function HomePage() {
 
     const [profile, setProfile] = useState(null);
@@ -34,6 +37,7 @@ function HomePage() {
     const [resume, setResume] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [technologies, setTechnologies] = useState([]);
 
     useEffect(() => {
 
@@ -47,14 +51,16 @@ function HomePage() {
                     projectsData,
                     experienceData,
                     educationData,
-                    resumeData
+                    resumeData,
+                    technologiesData
                 ] = await Promise.all([
                     getPublicProfile(),
                     getPublicSkills(),
                     getPublicProjects(),
                     getPublicExperience(),
                     getPublicEducation(),
-                    getPublicResume()
+                    getPublicResume(),
+                    getPublicTechnologies()
                 ]);
             
             setProfile(profileData);
@@ -63,6 +69,14 @@ function HomePage() {
                 Array.isArray(skillsData)
                     ? skillsData
                     : skillsData?.content || []
+            );
+
+            setTechnologies(
+                Array.isArray(technologiesData)
+                    ? technologiesData
+                    : technologiesData?.content ||
+                      technologiesData?.technologies ||
+                      []
             );
             
             setProjects(
@@ -141,6 +155,8 @@ function HomePage() {
             <About profile={profile} />
 
            <Skills skills={skills} />
+
+           <Technologies technologies={technologies} />
 
            <Projects projects={projects} />
 
