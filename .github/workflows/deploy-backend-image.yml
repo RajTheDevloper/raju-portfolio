@@ -2,13 +2,17 @@
 name: Build and Publish Portfolio Backend
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - "backend/portfolio-backend/**"
-      - ".github/workflows/deploy-backend-image.yml"
   workflow_dispatch:
+    inputs:
+      backend_branch:
+        description: "Branch containing the backend code to build"
+        required: true
+        type: choice
+        options:
+          - feature/backend-setup
+          - develop
+          - main
+        default: feature/backend-setup
 
 permissions:
   contents: read
@@ -19,8 +23,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout selected backend branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.backend_branch }}
 
       - name: Set up Java 21
         uses: actions/setup-java@v5
@@ -49,11 +55,13 @@ jobs:
       - name: Build and publish Docker image
         env:
           REPOSITORY: ${{ github.repository }}
+          BACKEND_BRANCH: ${{ inputs.backend_branch }}
         run: |
           IMAGE_NAME="ghcr.io/$(echo "$REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+          IMAGE_TAG="$(echo "$BACKEND_BRANCH" | tr '[:upper:]' '[:lower:]' | tr '/' '-')"
           docker buildx build \
             --platform linux/amd64 \
             --file backend/portfolio-backend/Dockerfile \
-            --tag "$IMAGE_NAME:latest" \
+            --tag "$IMAGE_NAME:$IMAGE_TAG" \
             --push \
             backend/portfolio-backend
