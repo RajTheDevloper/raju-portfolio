@@ -23,11 +23,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "21"
           cache: maven
+          cache-dependency-path: backend/portfolio-backend/pom.xml
 
       - name: Build and verify Spring Boot backend
         working-directory: backend/portfolio-backend
